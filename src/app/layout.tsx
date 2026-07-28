@@ -24,6 +24,7 @@ export const metadata: Metadata = {
 };
 
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { CareerBot } from "@/components/CareerBot";
 
 export default function RootLayout({
   children,
@@ -43,7 +44,10 @@ export default function RootLayout({
           enableSystem={false}
           disableTransitionOnChange
         >
-          <SessionProvider>{children}</SessionProvider>
+          <SessionProvider>
+            {children}
+            <CareerBot />
+          </SessionProvider>
         </ThemeProvider>
       </body>
     </html>
