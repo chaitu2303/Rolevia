@@ -12,7 +12,8 @@ export interface AgentDecision {
 const InterviewTurnSchema = z.object({
   reply: z.string().describe('The professional interviewer response or next question'),
   action: z.enum(['ASK_NEW', 'FOLLOW_UP', 'END_INTERVIEW']).describe('The action to take next'),
-  score: z.number().describe('A score from 0-100 evaluating the candidate\'s latest answer based on the role requirements')
+  score: z.number().describe('A score from 0-100 evaluating the candidate\'s latest answer based on the role requirements'),
+  feedback: z.string().describe('Specific, constructive feedback on the candidate\'s latest answer (e.g. what they missed, how to improve it). Do not include this in the reply.')
 });
 
 export class InterviewOrchestrator {
@@ -98,7 +99,8 @@ Instructions:
       reply: aiResult.reply,
       action: aiResult.action,
       isNativeIntelligence: false,
-      score: aiResult.score
+      score: aiResult.score,
+      feedback: aiResult.feedback
     };
   }
 
