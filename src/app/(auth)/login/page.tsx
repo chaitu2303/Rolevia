@@ -22,13 +22,15 @@ function LoginForm() {
   const justReset = searchParams.get('reset') === 'true';
   const oauthError = searchParams.get('error');
 
+  const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
+
   // Redirect if already logged in
   useEffect(() => {
     if (status === 'authenticated' && session?.user) {
       const onboardingCompleted = (session.user as any)?.onboardingCompleted;
-      router.replace(onboardingCompleted ? '/dashboard' : '/onboarding');
+      router.replace(onboardingCompleted ? callbackUrl : '/onboarding');
     }
-  }, [status, session, router]);
+  }, [status, session, router, callbackUrl]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
