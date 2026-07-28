@@ -65,7 +65,7 @@ export default function UtilityStudio() {
     setProcessing(true);
     try {
       const file = selectedFiles[0];
-      log(\`Sending \${file.name} to server for true DOCX conversion...\`);
+      log(`Sending ${file.name} to server for true DOCX conversion...`);
       
       const formData = new FormData();
       formData.append('file', file);
@@ -96,7 +96,7 @@ export default function UtilityStudio() {
     setProcessing(true);
     try {
       const file = selectedFiles[0];
-      log(\`Sending \${file.name} to server for true PDF conversion...\`);
+      log(`Sending ${file.name} to server for true PDF conversion...`);
       
       const formData = new FormData();
       formData.append('file', file);

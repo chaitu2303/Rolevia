@@ -1,11 +1,4 @@
 import { LocalExtractionAdapter } from '@/lib/extraction/local-adapter';
-
-export class ResumeIntelligenceEngine {
-  static async parse(buffer: Buffer, mimeType: string) {
-    const adapter = new LocalExtractionAdapter();
-    const rawText = await adapter.extract(buffer, mimeType);
-    
-import { LocalExtractionAdapter } from '@/lib/extraction/local-adapter';
 import { z } from 'zod';
 import { isAiAvailable, extractEntities } from '@/lib/ai/gateway';
 
@@ -60,17 +53,17 @@ export class ResumeIntelligenceEngine {
       throw new Error('AI Gateway is currently offline. Please configure your Ollama or API keys to parse resumes.');
     }
 
-    const prompt = \`
+    const prompt = `
 You are an expert Resume Parsing AI.
 Extract all structured data from the following raw resume text.
 
 RAW RESUME TEXT:
 """
-\${rawText.substring(0, 20000)}
+${rawText.substring(0, 20000)}
 """
 
 Extract the candidate's basics, skills, experiences, education, projects, and certifications.
-\`;
+`;
 
     const facts = await extractEntities(prompt, ResumeExtractionSchema, {
       systemPrompt: 'You are an elite Resume Parsing AI. Return highly accurate JSON conforming to the schema.'

@@ -43,21 +43,21 @@ export class JobIntelligenceEngine {
       education: safeProfile.educations.map(e => e.degree)
     };
 
-    const prompt = \`
+    const prompt = `
 You are an expert Technical Recruiter and ATS AI. Analyze the following Job Description against the Candidate's Profile.
 
 JOB DESCRIPTION:
 """
-\${jobDescription}
+${jobDescription}
 """
 
 CANDIDATE PROFILE:
 """
-\${JSON.stringify(profileContext, null, 2)}
+${JSON.stringify(profileContext, null, 2)}
 """
 
 Extract the exact Job Title, Company, and all requirements from the JD. Then calculate the match scores strictly comparing the JD against the provided Candidate Profile.
-\`;
+`;
 
     const aiResult = await extractEntities(prompt, JobAnalysisSchema, {
       systemPrompt: 'You are an elite Recruitment AI. Always return valid JSON conforming to the requested schema. Be extremely accurate with your match calculations.'
