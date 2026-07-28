@@ -101,26 +101,9 @@ Instructions:
     }
 
     if (!tailoredResume) {
-      // Free/No-API fallback template
-      tailoredResume = `[AI TAILORED RESUME PREVIEW - AI Offline]
-
-${profile?.basics?.name || user.name || 'Your Name'}
-${session.user.email} | Contact Number | LinkedIn Profile
-
-PROFESSIONAL SUMMARY
-Highly motivated professional with experience aligning to the requirements of this role. Proven ability to deliver results and leverage skills such as ${result.missingSkills.slice(0, 3).join(', ')}.
-
-SKILLS
-${result.matchedSkills.join(', ')}, ${result.missingSkills.join(', ')}
-
-EXPERIENCE
-[Your Company] - [Your Role]
-• Leveraged ${result.matchedSkills[0] || 'core skills'} to achieve significant business outcomes.
-• Addressed gaps in previous processes by utilizing ${result.missingSkills[0] || 'new methodologies'}.
-• Note: Connect an AI provider in settings to automatically write your full bullet points.
-
-EDUCATION
-[Your Degree] - [Your University]`;
+      // Free/No-API fallback: Use our local, deterministic dataset-driven Auto-Fixer
+      const { autoFixResumeText } = await import('@/lib/ats/AtsAutoFixer');
+      tailoredResume = autoFixResumeText(masterProfileText, result.missingSkills);
     }
 
     return NextResponse.json({

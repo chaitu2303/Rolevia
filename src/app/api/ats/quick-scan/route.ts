@@ -45,8 +45,11 @@ export async function POST(req: Request) {
 
     // Always use the rule-based engine — no API required, no costs, instant results
     const result = analyzeResume(resumeText);
+    
+    const { autoFixResumeText } = await import('@/lib/ats/AtsAutoFixer');
+    const autoFixedResume = autoFixResumeText(resumeText, []); // No JD, so missingSkills is empty
 
-    return NextResponse.json({ result });
+    return NextResponse.json({ result: { ...result, autoFixedResume } });
 
   } catch (err: any) {
     console.error('[ATS Quick Scan]', err);

@@ -19,6 +19,7 @@ export interface AtsResult {
   issues: AtsIssue[];
   strengths: string[];
   summary: string;
+  autoFixedResume?: string;
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────

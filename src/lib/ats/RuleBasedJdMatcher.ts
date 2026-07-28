@@ -1,17 +1,11 @@
+import skillsData from '@/data/ats_datasets/skills_taxonomy.json';
+import verbsData from '@/data/ats_datasets/action_verbs.json';
+
 // Deterministic Job Description Matcher
 // Ensures ATS match scores are 100% accurate, reproducible, and do not fluctuate like AI guesses.
 
-// A basic dictionary of common skills to look for in job descriptions
-const COMMON_SKILLS = new Set([
-  'javascript', 'typescript', 'python', 'java', 'c++', 'c#', 'ruby', 'go', 'rust', 'php',
-  'react', 'angular', 'vue', 'svelte', 'next.js', 'node.js', 'express', 'django', 'flask',
-  'spring', 'aws', 'azure', 'gcp', 'docker', 'kubernetes', 'sql', 'mysql', 'postgresql',
-  'mongodb', 'redis', 'elasticsearch', 'graphql', 'rest', 'api', 'ci/cd', 'git', 'agile',
-  'scrum', 'kanban', 'jira', 'linux', 'bash', 'css', 'html', 'tailwind', 'sass', 'figma',
-  'ui/ux', 'machine learning', 'ai', 'data science', 'pandas', 'numpy', 'tensorflow', 'pytorch',
-  'marketing', 'seo', 'sem', 'content', 'social media', 'b2b', 'b2c', 'sales', 'crm', 'salesforce',
-  'leadership', 'management', 'communication', 'problem solving', 'project management', 'pmp'
-]);
+const COMMON_SKILLS = new Set(skillsData.skills.map(s => s.toLowerCase()));
+const ACTION_VERBS = verbsData.power_verbs.map(v => v.toLowerCase());
 
 // Basic extraction of keywords from text
 function extractKeywords(text: string): string[] {
@@ -30,13 +24,11 @@ function extractKeywords(text: string): string[] {
   }
 
   // Also extract capitalized terms as potential proper nouns / proprietary skills
-  // (e.g., "Workday", "Tableau", "Salesforce")
   const properNouns = text.match(/\b([A-Z][a-z0-9]+)\b/g) || [];
   const ignoreList = new Set(['The', 'A', 'An', 'And', 'Or', 'In', 'On', 'At', 'To', 'For', 'With', 'Is', 'Are', 'This', 'We', 'Our', 'You', 'Your', 'If', 'As', 'By']);
   
   properNouns.forEach(noun => {
     if (!ignoreList.has(noun) && noun.length > 2) {
-      // Add lowercased version for comparison
       found.add(noun.toLowerCase());
     }
   });
@@ -55,8 +47,6 @@ export function matchJobDescription(resumeText: string, jdText: string) {
   const missingSkills: string[] = [];
   
   jdKeywords.forEach(keyword => {
-    // Simple substring match (could be improved with word boundaries)
-    // but for now, deterministic.
     const regex = new RegExp(`\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
     if (regex.test(resumeLower)) {
       matchedSkills.push(keyword);
@@ -66,11 +56,10 @@ export function matchJobDescription(resumeText: string, jdText: string) {
   });
 
   // Calculate scores
-  const totalKeywords = jdKeywords.length || 1; // prevent div by zero
+  const totalKeywords = jdKeywords.length || 1;
   const hardSkillsMatch = Math.round((matchedSkills.length / totalKeywords) * 100);
   
-  // Action verbs (reuse logic from RuleBasedAtsEngine conceptually)
-  const ACTION_VERBS = ['led', 'managed', 'developed', 'designed', 'built', 'created', 'implemented', 'launched', 'delivered', 'optimized', 'reduced', 'increased', 'improved'];
+  // Action verbs
   const resumeWords = resumeLower.split(/\s+/);
   const foundVerbs = ACTION_VERBS.filter(v => resumeWords.includes(v));
   const actionVerbsMatch = Math.min(100, Math.round((foundVerbs.length / 5) * 100)); // 5 verbs is a 100%

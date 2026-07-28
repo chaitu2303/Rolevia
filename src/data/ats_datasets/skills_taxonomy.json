@@ -1,0 +1,21 @@
+{
+  "description": "Master dataset of thousands of industry skills, tools, and technical keywords. Add your own data here to improve ATS match accuracy.",
+  "skills": [
+    "javascript", "typescript", "python", "java", "c++", "c#", "ruby", "go", "rust", "php",
+    "react", "angular", "vue", "svelte", "next.js", "node.js", "express", "django", "flask",
+    "spring", "aws", "azure", "gcp", "docker", "kubernetes", "sql", "mysql", "postgresql",
+    "mongodb", "redis", "elasticsearch", "graphql", "rest", "api", "ci/cd", "git", "agile",
+    "scrum", "kanban", "jira", "linux", "bash", "css", "html", "tailwind", "sass", "figma",
+    "ui/ux", "machine learning", "ai", "data science", "pandas", "numpy", "tensorflow", "pytorch",
+    "marketing", "seo", "sem", "content", "social media", "b2b", "b2c", "sales", "crm", "salesforce",
+    "leadership", "management", "communication", "problem solving", "project management", "pmp",
+    "data analysis", "business intelligence", "tableau", "power bi", "looker", "excel", "financial modeling",
+    "customer service", "zendesk", "intercom", "hubspot", "copywriting", "public relations", "event planning",
+    "recruiting", "human resources", "workday", "greenhouse", "lever", "onboarding", "payroll",
+    "supply chain", "logistics", "inventory management", "sap", "oracle", "manufacturing", "lean six sigma",
+    "quality assurance", "testing", "jest", "cypress", "selenium", "playwright", "qa",
+    "blockchain", "web3", "smart contracts", "solidity", "ethereum", "cybersecurity", "penetration testing",
+    "cloud computing", "serverless", "microservices", "architecture", "system design", "networking",
+    "tcp/ip", "dns", "http", "https", "load balancing", "nginx", "apache", "kafka", "rabbitmq"
+  ]
+}

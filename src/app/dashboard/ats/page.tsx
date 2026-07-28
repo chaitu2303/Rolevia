@@ -343,6 +343,25 @@ function ResumeScanner() {
               <RefreshCw className="w-4 h-4" /> Scan a Different Resume
             </button>
           </div>
+
+          {/* Inline Auto-Fixer */}
+          {result.autoFixedResume && (
+            <div className="mt-8 bg-[#FF90E8] border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-4 space-y-3">
+              <div className="flex items-center gap-2 font-black uppercase border-b-2 border-black pb-2">
+                <Zap className="w-5 h-5" /> Instant Auto-Fix
+              </div>
+              <p className="text-sm font-bold text-black/80">Our local engine automatically upgraded your weak verbs and fixed ATS-breaking characters.</p>
+              <button 
+                onClick={() => {
+                  navigator.clipboard.writeText(result.autoFixedResume!);
+                  toast.success("Auto-fixed resume copied to clipboard!");
+                }}
+                className="w-full bg-white text-black font-black uppercase py-2 border-2 border-black hover:bg-gray-100 flex items-center justify-center gap-2 text-sm"
+              >
+                <Copy className="w-4 h-4" /> Copy Fixed Text
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Right: Issues */}

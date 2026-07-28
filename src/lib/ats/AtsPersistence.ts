@@ -20,6 +20,7 @@ export interface StoredAtsResult {
   summary: string;
   fileName?: string;
   scannedAt: number;
+  autoFixedResume?: string;
 }
 
 export function saveAtsPendingResult(result: Omit<StoredAtsResult, 'scannedAt'>) {
