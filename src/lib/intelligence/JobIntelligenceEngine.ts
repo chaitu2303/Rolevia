@@ -2,7 +2,6 @@ import { GroundedProfile } from './EvidenceGroundingEngine';
 
 import { z } from 'zod';
 import { isAiAvailable, extractEntities } from '@/lib/ai/gateway';
-import { GroundedProfile } from './EvidenceGroundingEngine';
 
 const JobAnalysisSchema = z.object({
   roleTitle: z.string().describe('The official role title of the job'),
