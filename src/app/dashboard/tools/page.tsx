@@ -59,25 +59,30 @@ export default function UtilityStudio() {
     }
   };
 
-  // Simulated PDF to Word for browser-side
+  // Genuine PDF to Word via Backend
   const convertPdfToWord = async () => {
     if (selectedFiles.length === 0) return alert('Select a PDF file.');
     setProcessing(true);
     try {
       const file = selectedFiles[0];
-      log(`Analyzing PDF structure for ${file.name}...`);
-      await new Promise(r => setTimeout(r, 800));
-      log('Extracting text and formatting layers...');
-      await new Promise(r => setTimeout(r, 1200));
-      log('Rebuilding as DOCX format...');
-      await new Promise(r => setTimeout(r, 600));
+      log(\`Sending \${file.name} to server for true DOCX conversion...\`);
+      
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('targetFormat', 'docx');
 
-      // Create a dummy Word file blob (since full client-side PDF->Word is too complex for a pure UI demo)
-      const blob = new Blob(["This is a generated Word document placeholder."], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+      const res = await fetch('/api/tools/convert', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error('Conversion failed on server');
+
+      const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       setResultUrl(url);
       setOutputFileName(file.name.replace(/\.[^/.]+$/, "") + ".docx");
-      log('DOCX generated successfully in browser memory.');
+      log('DOCX generated successfully from extracted text.');
       setProcessing(false);
     } catch (err) {
       log('Error during conversion.');
@@ -85,22 +90,26 @@ export default function UtilityStudio() {
     }
   };
 
-  // Genuine Word to PDF using pdf-lib (Creates a new PDF with placeholder text, since docx parsing is complex)
+  // Genuine Word to PDF via Backend
   const convertWordToPdf = async () => {
     if (selectedFiles.length === 0) return alert('Select a Word file.');
     setProcessing(true);
     try {
       const file = selectedFiles[0];
-      log(`Reading Word document ${file.name}...`);
-      await new Promise(r => setTimeout(r, 800));
-      log('Rendering pages to PDF format using pdf-lib...');
+      log(\`Sending \${file.name} to server for true PDF conversion...\`);
       
-      const pdfDoc = await PDFDocument.create();
-      const page = pdfDoc.addPage();
-      page.drawText(`Converted PDF from ${file.name}\n\n(Full docx extraction requires a backend or heavy WASM module,\nthis is a local fallback)`, { x: 50, y: 700, size: 15 });
-      
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('targetFormat', 'pdf');
+
+      const res = await fetch('/api/tools/convert', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error('Conversion failed on server');
+
+      const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       setResultUrl(url);
       setOutputFileName(file.name.replace(/\.[^/.]+$/, "") + ".pdf");
