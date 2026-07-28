@@ -63,16 +63,16 @@ export class InterviewOrchestrator {
 
     const log = Array.isArray(session.conversationLog) ? (session.conversationLog as any[]) : [];
     
-    const prompt = \`
-You are an expert \${session.type} interviewer conducting an interview for a \${session.targetRole} (\${session.difficulty} level).
-Candidate's Latest Answer: "\${candidateAnswer}".
-Previous Conversation History: \${JSON.stringify(log.slice(-6))}.
+    const prompt = `
+You are an expert ${session.type} interviewer conducting an interview for a ${session.targetRole} (${session.difficulty} level).
+Candidate's Latest Answer: "${candidateAnswer}".
+Previous Conversation History: ${JSON.stringify(log.slice(-6))}.
 
 Instructions:
-1. Evaluate the candidate's latest answer out of 100 based on standard industry expectations for a \${session.targetRole}.
-2. Generate the next professional, engaging \${session.type === 'TECHNICAL' ? 'technical/coding/architecture' : 'behavioral/HR/STAR-method'} question or feedback.
+1. Evaluate the candidate's latest answer out of 100 based on standard industry expectations for a ${session.targetRole}.
+2. Generate the next professional, engaging ${session.type === 'TECHNICAL' ? 'technical/coding/architecture' : 'behavioral/HR/STAR-method'} question or feedback.
 3. If this is the 5th or 6th turn, or the candidate has answered excellently across the board, choose "END_INTERVIEW" and thank them.
-\`;
+`;
 
     const aiResult = await extractEntities(prompt, InterviewTurnSchema, {
       systemPrompt: 'You are an elite automated Interview AI. Output valid JSON strictly conforming to the requested schema. Maintain a professional, conversational tone.'

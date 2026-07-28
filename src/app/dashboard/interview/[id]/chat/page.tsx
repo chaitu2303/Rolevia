@@ -249,7 +249,7 @@ export default function MockInterviewPage() {
             <div className="h-4 w-full bg-black border-2 border-white relative overflow-hidden">
               <div 
                 className="h-full bg-white transition-all duration-1000" 
-                style={{ width: \`\${score || 0}%\` }} 
+                style={{ width: `${score || 0}%` }} 
               />
             </div>
           </div>
