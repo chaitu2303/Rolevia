@@ -14,50 +14,45 @@ import {
 
 const navGroups = [
   {
-    label: 'Core Dashboard',
+    label: 'Overview',
     items: [
-      { href: '/dashboard', label: 'Command Center', icon: LayoutDashboard, exact: true },
+      { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, exact: true },
+      { href: '/dashboard/applications', label: 'Job Applications', icon: FileCog },
       { href: '/dashboard/notifications', label: 'Notifications', icon: Bell },
     ]
   },
   {
-    label: 'Target & Prepare',
+    label: 'Preparation',
     items: [
       { href: '/dashboard/profile', label: 'Master Profile', icon: UserCircle },
-      { href: '/dashboard/jobs', label: 'Job Intelligence', icon: Briefcase },
+      { href: '/dashboard/resumes', label: 'Resume Builder', icon: FileText },
       { href: '/dashboard/ats', label: 'ATS Analyzer', icon: Target },
-      { href: '/dashboard/resumes', label: 'Resume Studio', icon: FileText },
     ]
   },
   {
-    label: 'Learn & Practice',
+    label: 'Job Hunt',
     items: [
-      { href: '/dashboard/learn', label: 'Skill Roadmaps', icon: BookOpen },
-      { href: '/dashboard/code', label: 'Coding Arena', icon: Code2 },
-      { href: '/dashboard/assess', label: 'Assessments', icon: MonitorCheck },
-    ]
-  },
-  {
-    label: 'Interview Engine',
-    items: [
-      { href: '/dashboard/interview', label: 'Mock Interviews', icon: Brain },
-      { href: '/dashboard/simulations', label: 'Full Recruitment Simulator', icon: Bot },
-    ]
-  },
-  {
-    label: 'Track & Apply',
-    items: [
-      { href: '/dashboard/copilot', label: 'Auto-Apply Copilot', icon: Zap },
-      { href: '/dashboard/applications', label: 'Kanban Tracker', icon: FileCog },
+      { href: '/dashboard/jobs', label: 'Job Search', icon: Briefcase },
+      { href: '/dashboard/copilot', label: 'Auto-Apply Bot', icon: Zap },
       { href: '/dashboard/tools/company-intel', label: 'Company Intel', icon: Building2 },
       { href: '/dashboard/tools/salary-negotiation', label: 'Salary Negotiator', icon: DollarSign },
     ]
   },
   {
-    label: 'Metrics & Growth',
+    label: 'Interviews & Tests',
     items: [
-      { href: '/dashboard/analytics', label: 'Performance', icon: BarChart3 },
-      { href: '/dashboard/achievements', label: 'Streaks & Rewards', icon: Trophy },
+      { href: '/dashboard/interview', label: 'AI Interviews', icon: Brain },
+      { href: '/dashboard/simulations', label: 'Full Simulations', icon: Bot },
+      { href: '/dashboard/assess', label: 'Assessments', icon: MonitorCheck },
+      { href: '/dashboard/code', label: 'Coding Arena', icon: Code2 },
+    ]
+  },
+  {
+    label: 'Growth',
+    items: [
+      { href: '/dashboard/learn', label: 'Learning Paths', icon: BookOpen },
+      { href: '/dashboard/analytics', label: 'Analytics', icon: BarChart3 },
+      { href: '/dashboard/achievements', label: 'Achievements', icon: Trophy },
       { href: '/dashboard/memory', label: 'Career Memory', icon: Database },
       { href: '/dashboard/passport', label: 'Career Passport', icon: Compass },
     ]
