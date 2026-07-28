@@ -197,13 +197,58 @@ export default function ATSAnalysisPage() {
                 <div>
                   <div className="flex items-center justify-between p-6 bg-[#faf8f5] border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] mb-8">
                     <div>
-                      <h3 className="font-bold uppercase tracking-wider mb-1">ATS Match Score</h3>
+                      <h3 className="font-bold uppercase tracking-wider mb-1">Overall ATS Match Score</h3>
                       <p className="text-5xl font-black">{results.score}%</p>
                     </div>
                     <div className="w-20 h-20 bg-white border-4 border-black rounded-full flex items-center justify-center font-bold rotate-6">
                       {results.score >= 80 ? "🔥" : results.score >= 60 ? "👍" : "😬"}
                     </div>
                   </div>
+
+                  {/* Multi-Dimension Breakdown */}
+                  {results.breakdown && (
+                    <div className="grid grid-cols-3 gap-4 mb-8">
+                      <div className="p-4 bg-[#abf5d1] border-3 border-black text-black">
+                        <span className="text-[11px] font-black uppercase tracking-wider block">Hard Skills Match</span>
+                        <span className="text-2xl font-black">{results.breakdown.hardSkillsMatch}%</span>
+                      </div>
+                      <div className="p-4 bg-[#ffe500] border-3 border-black text-black">
+                        <span className="text-[11px] font-black uppercase tracking-wider block">Action Verbs & Impact</span>
+                        <span className="text-2xl font-black">{results.breakdown.actionVerbsMatch}%</span>
+                      </div>
+                      <div className="p-4 bg-[#90c0ff] border-3 border-black text-black">
+                        <span className="text-[11px] font-black uppercase tracking-wider block">ATS Readability</span>
+                        <span className="text-2xl font-black">{results.breakdown.atsReadability}%</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Explicit Actionable Changes Required (Eme Changes Cheyali) */}
+                  {results.actionableChanges && results.actionableChanges.length > 0 && (
+                    <div className="mb-8 p-6 bg-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] space-y-4">
+                      <h3 className="font-black uppercase text-xl border-b-4 border-black pb-2 flex items-center gap-2">
+                        💡 Required Resume Changes (Exact Actions)
+                      </h3>
+                      <div className="space-y-3">
+                        {results.actionableChanges.map((change: any, idx: number) => (
+                          <div key={idx} className="p-4 bg-[#faf8f5] border-3 border-black space-y-1">
+                            <div className="flex items-center justify-between">
+                              <span className="font-black text-base uppercase">{change.title}</span>
+                              <span className={`text-[10px] font-black uppercase px-2 py-0.5 border-2 border-black ${
+                                change.severity === 'CRITICAL' ? 'bg-[#ff4040] text-white' : 'bg-[#ffe500] text-black'
+                              }`}>
+                                {change.severity}
+                              </span>
+                            </div>
+                            <p className="text-xs font-bold text-gray-700">{change.description}</p>
+                            <div className="mt-2 pt-2 border-t-2 border-dashed border-black/20 text-xs font-black text-[#23a094]">
+                              👉 Recommended Fix: {change.action}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="p-6 bg-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">

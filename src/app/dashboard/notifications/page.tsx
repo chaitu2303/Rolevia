@@ -30,42 +30,18 @@ export default async function NotificationsPage() {
   const session = await auth();
   if (!session?.user?.email) redirect('/');
 
-  // In a real app we'd fetch from a notifications table
-  // For now, let's mock some notifications to make the UI fully functional
-  const notifications = [
-    {
-      id: '1',
-      title: 'Mock Interview Scored',
-      message: 'Your recent technical interview for Frontend Engineer has been scored. You achieved 85%.',
-      type: 'INTERVIEW',
-      read: false,
-      createdAt: '2024-06-01T12:00:00.000Z'
-    },
-    {
-      id: '2',
-      title: 'Resume Tailored',
-      message: 'Your resume for the Google Software Engineer role has been successfully tailored and is ready for download.',
-      type: 'RESUME',
-      read: false,
-      createdAt: '2024-06-01T11:00:00.000Z' // 1 hour ago
-    },
-    {
-      id: '3',
-      title: 'New Job Matches',
-      message: 'We found 5 new jobs that match your Master Profile with >80% accuracy.',
-      type: 'JOB',
-      read: true,
-      createdAt: '2024-05-31T12:00:00.000Z' // 1 day ago
-    },
-    {
-      id: '4',
-      title: 'Welcome to CareerOS',
-      message: 'Complete your master profile to unlock personalized AI tools.',
-      type: 'SYSTEM',
-      read: true,
-      createdAt: '2024-05-30T12:00:00.000Z' // 2 days ago
-    }
-  ];
+  const user = await prisma.user.findUnique({
+    where: { email: session.user.email },
+    select: { id: true }
+  });
+
+  if (!user) redirect('/');
+
+  const notifications = await prisma.notification.findMany({
+    where: { userId: user.id },
+    orderBy: { createdAt: 'desc' },
+    take: 50
+  });
 
   return (
     <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-8 animate-in fade-in duration-500">
@@ -92,25 +68,27 @@ export default async function NotificationsPage() {
               const colorClass = getColor(note.type);
               
               return (
-                <div key={note.id} className={`p-6 flex gap-4 transition-colors hover:bg-muted/30 ${!note.read ? 'bg-primary/5' : ''}`}>
+                <div key={note.id} className={`p-6 flex gap-4 transition-colors hover:bg-muted/30 ${!note.isRead ? 'bg-primary/5' : ''}`}>
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${colorClass}`}>
                     <Icon className="w-6 h-6" />
                   </div>
                   <div className="flex-1 space-y-1">
                     <div className="flex items-start justify-between gap-4">
-                      <h3 className={`text-base font-bold ${!note.read ? 'text-foreground' : 'text-foreground/80'}`}>
+                      <h3 className={`font-semibold ${!note.isRead ? 'text-foreground' : 'text-muted-foreground'}`}>
                         {note.title}
                       </h3>
-                      <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">
+                      <span className="text-xs text-muted-foreground whitespace-nowrap">
                         {new Date(note.createdAt).toLocaleDateString()}
                       </span>
                     </div>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      {note.message}
+                      {note.body}
                     </p>
                   </div>
-                  {!note.read && (
-                    <div className="w-2 h-2 rounded-full bg-primary mt-2 shrink-0 shadow-[0_0_8px_rgba(var(--primary),0.5)]" />
+                  {!note.isRead && (
+                    <div className="flex items-center shrink-0">
+                      <div className="w-2.5 h-2.5 rounded-full bg-primary" />
+                    </div>
                   )}
                 </div>
               );

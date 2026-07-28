@@ -1,0 +1,18 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="6" y="6" width="52" height="52" rx="16" fill="#000000"/>
+  <rect x="4" y="4" width="52" height="52" rx="16" fill="url(#p2j_icon_grad)" stroke="#000000" stroke-width="4"/>
+  <path d="M16 26L30 17L44 26L30 35L16 26Z" fill="#000000" stroke="#FFFFFF" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M22 30V39C22 39 25 43 30 43C35 43 38 39 38 39V30" stroke="#000000" stroke-width="4" stroke-linecap="round"/>
+  <path d="M22 30V39C22 39 25 43 30 43C35 43 38 39 38 39V30" stroke="#FFE500" stroke-width="2" stroke-linecap="round"/>
+  <path d="M42 16L48 22L36 34L30 34L30 28L42 16Z" fill="#FF90E8" stroke="#000000" stroke-width="2.5"/>
+  <circle cx="43" cy="21" r="2" fill="#000000"/>
+  <rect x="34" y="34" width="24" height="24" rx="8" fill="#FFE500" stroke="#000000" stroke-width="3"/>
+  <text x="42" y="52" font-family="Arial Black, sans-serif" font-weight="900" font-size="17" fill="#000000">2</text>
+  <defs>
+    <linearGradient id="p2j_icon_grad" x1="4" y1="4" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00F2FE"/>
+      <stop offset="0.5" stop-color="#4FACFE"/>
+      <stop offset="1" stop-color="#23A094"/>
+    </linearGradient>
+  </defs>
+</svg>

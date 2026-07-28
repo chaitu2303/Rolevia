@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Eye, EyeOff } from 'lucide-react';
 
+import { Logo } from '@/components/Logo';
+
 function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -59,10 +61,11 @@ function LoginForm() {
 
   return (
     <div className="flex h-screen items-center justify-center bg-slate-50 dark:bg-slate-950">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-200 dark:border-slate-800">
-        <div className="text-center space-y-1">
+      <div className="w-full max-w-md p-8 space-y-6 bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-200 dark:border-slate-800 flex flex-col items-center">
+        <Logo size="md" className="mb-2" />
+        <div className="text-center space-y-1 w-full">
           <h1 className="text-3xl font-bold">Welcome back</h1>
-          <p className="text-sm text-muted-foreground">Sign in to your CareerOS account</p>
+          <p className="text-sm text-muted-foreground">Sign in to your Placement2Job account</p>
         </div>
 
         {justRegistered && (

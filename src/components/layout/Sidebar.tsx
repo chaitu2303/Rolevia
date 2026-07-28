@@ -3,12 +3,13 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Logo } from '@/components/Logo';
 import {
   LayoutDashboard, UserCircle, Database, Briefcase, FileText,
   Code2, Brain, BarChart3, Trophy, Settings, ChevronRight,
   GraduationCap, FlameKindling, Zap, BookOpen, Target,
   MonitorCheck, Menu, X, FileCog, Search, Bell, Bot, Compass,
-  ChevronLeft
+  ChevronLeft, Building2, DollarSign
 } from 'lucide-react';
 
 const navGroups = [
@@ -49,6 +50,8 @@ const navGroups = [
     items: [
       { href: '/dashboard/copilot', label: 'Application Copilot', icon: Zap },
       { href: '/dashboard/applications', label: 'Application Tracker', icon: FileCog },
+      { href: '/dashboard/tools/company-intel', label: 'Company Intel', icon: Building2 },
+      { href: '/dashboard/tools/salary-negotiation', label: 'Salary Negotiator', icon: DollarSign },
     ]
   },
   {
@@ -108,10 +111,7 @@ export function Sidebar({ userName, streak = 0, xp = 0, level = 1 }: SidebarProp
       {/* Logo & Toggle */}
       <div className="h-14 flex items-center justify-between px-4 shrink-0">
         <Link href="/dashboard" className={`flex items-center gap-3 overflow-hidden ${isCollapsed ? 'justify-center w-full' : ''}`}>
-          <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center shrink-0 premium-shadow">
-            <GraduationCap className="w-5 h-5 text-primary-foreground" />
-          </div>
-          {!isCollapsed && <span className="font-bold text-lg tracking-tight truncate">CareerOS</span>}
+          <Logo showText={!isCollapsed} size="sm" />
         </Link>
       </div>
 

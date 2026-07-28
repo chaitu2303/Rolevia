@@ -14,8 +14,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CareerOS — Your Career Operating System",
-  description: "AI-powered career intelligence platform for job seekers",
+  title: "Placement2Job — Complete Placement to Job OS",
+  description: "AI-powered placement preparation, resume alteration, auto application filler, mock interviews, and skill learning platform",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  }
 };
 
 import { ThemeProvider } from "@/components/ThemeProvider";
@@ -31,7 +36,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-[#faf8f5]">
+      <body className="min-h-full flex flex-col bg-[#faf8f5] overflow-x-hidden">
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

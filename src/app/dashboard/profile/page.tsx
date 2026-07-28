@@ -12,30 +12,26 @@ export default function MasterProfilePage() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    // In a real implementation this would fetch from /api/profile
-    // For this milestone, we'll mock the response to fix the empty state/crash
-    setTimeout(() => {
-      setProfile({
-        basics: {
-          name: 'John Doe',
-          email: 'john@example.com',
-          summary: 'Software Engineer with a passion for building scalable web applications.',
-          location: 'San Francisco, CA'
-        },
-        experiences: [
-          { role: 'Frontend Engineer', company: 'Tech Corp', duration: '2021 - Present' }
-        ],
-        educations: [
-          { degree: 'B.S. Computer Science', institution: 'University of Tech', year: '2021' }
-        ],
-        skills: [
-          { name: 'React', category: 'Language' },
-          { name: 'TypeScript', category: 'Language' },
-          { name: 'Node.js', category: 'Framework' }
-        ]
+    fetch('/api/profile')
+      .then(res => res.json())
+      .then(data => {
+        if (data.profile) {
+          setProfile(data.profile);
+        } else {
+          // Fallback if no profile
+          setProfile({
+            basics: { name: 'Not set', email: 'Not set', summary: 'Not set', location: 'Not set' },
+            experiences: [],
+            educations: [],
+            skills: []
+          });
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to fetch profile', err);
+        setLoading(false);
       });
-      setLoading(false);
-    }, 1000);
   }, []);
 
   const handleSave = () => {

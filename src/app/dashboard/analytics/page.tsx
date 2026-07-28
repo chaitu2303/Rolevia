@@ -41,12 +41,14 @@ export default async function AnalyticsPage() {
 
   if (!user) redirect('/');
 
-  // Mock aggregates
-  const appsCount = 24;
-  const interviewsCount = 3;
+  const appsCount = await prisma.jobApplication.count({ where: { userId: user.id } });
+  const interviewsCount = await prisma.jobApplication.count({ 
+    where: { userId: user.id, status: { in: ['INTERVIEW', 'OFFER', 'HIRED'] } } 
+  });
   
-  const winRate = '12%';
-  const hoursSpent = 48;
+  const winRate = appsCount > 0 ? Math.round((interviewsCount / appsCount) * 100) + '%' : '0%';
+  const xp = user.xpRecord?.totalXp || 0;
+  const hoursSpent = Math.floor(xp / 50); // Rough estimate: 50 XP per hour
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-10 min-h-[calc(100vh-4rem)] bg-[#faf8f5] text-black">

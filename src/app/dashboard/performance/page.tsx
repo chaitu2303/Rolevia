@@ -155,6 +155,66 @@ export default async function CareerPerformanceCenter() {
           </Card>
         </div>
       </div>
+
+      {/* Post-Placement Career Growth Hub */}
+      <div className="bg-white border-4 border-black p-8 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-4 border-black pb-4">
+          <div>
+            <span className="bg-[#ffe500] text-black border-2 border-black px-2.5 py-1 font-black uppercase text-xs">
+              Post-Placement Success
+            </span>
+            <h2 className="text-3xl font-black uppercase tracking-tight mt-2">
+              🎉 Post-Job Career Growth & 30-60-90 Day Hub
+            </h2>
+            <p className="font-bold text-sm text-gray-700 mt-1">
+              Stay ahead after landing your job! Track your onboarding milestones, salary growth, and performance review goals.
+            </p>
+          </div>
+          <span className="bg-[#abf5d1] text-black border-2 border-black font-black uppercase text-xs px-3 py-1.5 self-start md:self-auto">
+            Career Tier: Placed / Onboarding
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+          
+          <div className="bg-[#faf8f5] border-4 border-black p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] space-y-3">
+            <div className="bg-[#90c0ff] border-2 border-black px-2.5 py-1 text-black font-black uppercase text-xs inline-block">
+              Days 1 - 30
+            </div>
+            <h3 className="font-black text-xl uppercase">Onboarding & Setup</h3>
+            <ul className="space-y-2 text-sm font-bold text-gray-800">
+              <li className="flex items-center gap-2">✅ Complete HR onboarding & IT environment setup</li>
+              <li className="flex items-center gap-2">✅ Clone codebase & run first local build</li>
+              <li className="flex items-center gap-2">✅ Meet 1-on-1 with engineering manager & mentor</li>
+            </ul>
+          </div>
+
+          <div className="bg-[#faf8f5] border-4 border-black p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] space-y-3">
+            <div className="bg-[#ffe500] border-2 border-black px-2.5 py-1 text-black font-black uppercase text-xs inline-block">
+              Days 31 - 60
+            </div>
+            <h3 className="font-black text-xl uppercase">First Production Ship</h3>
+            <ul className="space-y-2 text-sm font-bold text-gray-800">
+              <li className="flex items-center gap-2">⚡ Deliver first bug fix & feature PR into main</li>
+              <li className="flex items-center gap-2">⚡ Participate actively in daily standups & sprint reviews</li>
+              <li className="flex items-center gap-2">⚡ Document internal system architecture notes</li>
+            </ul>
+          </div>
+
+          <div className="bg-[#faf8f5] border-4 border-black p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] space-y-3">
+            <div className="bg-[#abf5d1] border-2 border-black px-2.5 py-1 text-black font-black uppercase text-xs inline-block">
+              Days 61 - 90
+            </div>
+            <h3 className="font-black text-xl uppercase">Full Ownership & Growth</h3>
+            <ul className="space-y-2 text-sm font-bold text-gray-800">
+              <li className="flex items-center gap-2">🚀 Lead sub-feature architectural ownership</li>
+              <li className="flex items-center gap-2">🚀 Conduct peer code reviews for junior teammates</li>
+              <li className="flex items-center gap-2">🚀 Review 90-day performance goals for annual appraisal</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
     </div>
   );
 }

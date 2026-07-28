@@ -79,7 +79,12 @@ export default async function DashboardHomePage() {
   const skillCount = profile?.skills.length ?? 0;
   const expCount = profile?.experiences.length ?? 0;
 
-  const todayMission = dbUser?.dailyMissions[0];
+  let todayMission = dbUser?.dailyMissions[0];
+  if (!todayMission && dbUser) {
+    const { MissionEngine } = await import('@/lib/gamification/MissionEngine');
+    todayMission = await MissionEngine.generateDailyMissions(dbUser.id);
+  }
+
   const missionTasks: Array<{ id: string; label: string; completed: boolean }> = Array.isArray(todayMission?.tasks)
     ? (todayMission.tasks as Array<{ id: string; label: string; completed: boolean }>)
     : [

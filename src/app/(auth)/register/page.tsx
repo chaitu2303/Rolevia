@@ -4,6 +4,7 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Eye, EyeOff, Check } from 'lucide-react';
+import { Logo } from '@/components/Logo';
 
 function getPasswordStrength(password: string) {
   const checks = {
@@ -33,10 +34,6 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters.');
-      return;
-    }
     setLoading(true);
     setError('');
 
@@ -44,27 +41,34 @@ export default function RegisterPage() {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ email, password, name }),
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to register');
 
-      // Auto sign-in after successful registration
-      const result = await signIn('credentials', {
+      if (!res.ok) {
+        setError(data.error || 'Registration failed');
+        setLoading(false);
+        return;
+      }
+
+      // Auto sign-in after registration
+      const signInResult = await signIn('credentials', {
         redirect: false,
         email,
         password,
       });
 
-      if (result?.error) {
+      setLoading(false);
+
+      if (signInResult?.error) {
+        // Fallback: redirect to login if auto sign-in fails
         router.push('/login?registered=true');
       } else {
         router.push('/onboarding');
       }
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
+    } catch {
+      setError('An error occurred. Please try again.');
       setLoading(false);
     }
   };
@@ -75,17 +79,18 @@ export default function RegisterPage() {
     try {
       await signIn('google', { callbackUrl: '/onboarding' });
     } catch {
-      setError('Google sign-up failed. Please try again.');
+      setError('Google sign-in failed. Please try again.');
       setGoogleLoading(false);
     }
   };
 
   return (
     <div className="flex h-screen items-center justify-center bg-slate-50 dark:bg-slate-950">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-200 dark:border-slate-800">
-        <div className="text-center space-y-1">
+      <div className="w-full max-w-md p-8 space-y-6 bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-200 dark:border-slate-800 flex flex-col items-center">
+        <Logo size="md" className="mb-2" />
+        <div className="text-center space-y-1 w-full">
           <h1 className="text-3xl font-bold">Create your account</h1>
-          <p className="text-sm text-muted-foreground">Start your CareerOS journey</p>
+          <p className="text-sm text-muted-foreground">Start your Placement2Job journey</p>
         </div>
 
         {error && (

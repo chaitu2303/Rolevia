@@ -10,11 +10,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
     }
 
+    const normalizedEmail = String(email).toLowerCase().trim();
+
     if (password.length < 8) {
       return NextResponse.json({ error: 'Password must be at least 8 characters' }, { status: 400 });
     }
 
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    const existingUser = await prisma.user.findUnique({ where: { email: normalizedEmail } });
     if (existingUser) {
       return NextResponse.json({ error: 'An account with this email already exists' }, { status: 400 });
     }
@@ -25,7 +27,7 @@ export async function POST(req: Request) {
     const user = await prisma.$transaction(async (tx) => {
       const newUser = await tx.user.create({
         data: {
-          email,
+          email: normalizedEmail,
           password: hashedPassword,
           name,
         }
@@ -42,7 +44,7 @@ export async function POST(req: Request) {
       await tx.profileBasics.create({
         data: {
           profileId: profile.id,
-          email: email,
+          email: normalizedEmail,
           name: name || null,
           status: 'USER_CREATED',
         }

@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Kanban, List, Clock, Filter, Plus, Loader2, Link2, ArrowRight } from 'lucide-react';
+import { Kanban, List, Clock, Filter, Plus, Loader2, Link2, ArrowRight, Zap } from 'lucide-react';
+import { AutoFillHelper } from './auto-fill-helper';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import {
@@ -134,6 +135,8 @@ export default function ApplicationTrackerHub() {
     );
   }
 
+  const [showAutoFill, setShowAutoFill] = useState(false);
+
   return (
     <div className="max-w-7xl mx-auto py-8 px-4 h-full flex flex-col min-h-[calc(100vh-4rem)]">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 border-b-8 border-black pb-8 shrink-0">
@@ -143,6 +146,13 @@ export default function ApplicationTrackerHub() {
         </div>
         
         <div className="flex flex-wrap gap-2">
+          <Button 
+            onClick={() => setShowAutoFill(!showAutoFill)}
+            className="h-12 px-6 rounded-none border-4 border-black bg-[#abf5d1] hover:bg-[#86e8b8] text-black font-black uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:translate-x-1 hover:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] transition-all"
+          >
+            <Zap className="w-5 h-5 mr-2" /> {showAutoFill ? 'Close Auto-Fill' : 'Auto-Fill Assistant'}
+          </Button>
+
           <Dialog open={syncOpen} onOpenChange={setSyncOpen}>
             <DialogTrigger render={<Button className="h-12 px-6 rounded-none border-4 border-black bg-[#ffe500] hover:bg-[#ffea33] text-black font-black uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:translate-x-1 hover:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] transition-all">
               <Link2 className="w-5 h-5 mr-2" /> Sync Job URL
@@ -202,6 +212,12 @@ export default function ApplicationTrackerHub() {
           </Dialog>
         </div>
       </div>
+
+      {showAutoFill && (
+        <div className="mb-8">
+          <AutoFillHelper onApplicationCreated={(app) => setApplications(prev => [app, ...prev])} />
+        </div>
+      )}
 
       {viewMode === 'KANBAN' && (
         <div className="flex-1 flex gap-4 overflow-x-auto pb-4">

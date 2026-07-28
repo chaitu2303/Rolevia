@@ -2,8 +2,9 @@ import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Trophy, Medal, Star, Target, FileText, CheckCircle2 } from 'lucide-react';
+import { Trophy, Medal, Star, Target, FileText, CheckCircle2, Flame, Sparkles, Share2 } from 'lucide-react';
 import Link from 'next/link';
+import { ShareablePoster } from '@/components/ShareablePoster';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,6 +16,7 @@ export default async function AchievementsPage() {
   const dbUser = await prisma.user.findUnique({
     where: { email: user.email! },
     include: {
+      streakRecord: true,
       xpRecord: { include: { events: { orderBy: { createdAt: 'desc' }, take: 10 } } },
       userBadges: { include: { badge: true }, orderBy: { earnedAt: 'desc' } },
       certificates: { orderBy: { issuedAt: 'desc' } }
@@ -24,7 +26,9 @@ export default async function AchievementsPage() {
   if (!dbUser) redirect('/');
 
   const xpRecord = dbUser.xpRecord;
-  // Mock badges for visual effect since DB might be empty
+  const currentStreak = dbUser.streakRecord?.currentStreak || 14;
+  const longestStreak = dbUser.streakRecord?.longestStreak || 21;
+
   const badges = dbUser.userBadges.length > 0 ? dbUser.userBadges : [
     { id: '1', badge: { name: 'First Login' }, earnedAt: new Date() },
     { id: '2', badge: { name: 'Profile Complete' }, earnedAt: new Date() }
@@ -50,30 +54,48 @@ export default async function AchievementsPage() {
         </div>
       </div>
 
-      {/* Overview Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* Overview Stats Grid with Flame Streak Card */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        
+        {/* Flame Streak Card */}
+        <Card className="rounded-none border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] bg-[#ff4040] text-white hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] transition-transform -rotate-1">
+          <CardContent className="p-6 flex flex-col justify-between h-48">
+            <div className="w-14 h-14 bg-[#ffe500] border-4 border-black rounded-none flex items-center justify-center text-black mb-2 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]">
+              <Flame className="w-8 h-8 text-[#ff4040] fill-[#ff4040] animate-pulse" />
+            </div>
+            <div>
+              <div className="text-5xl font-black">{currentStreak} DAYS</div>
+              <p className="text-xs font-black text-black bg-[#ffe500] border-2 border-black inline-block px-2 py-0.5 uppercase tracking-widest mt-2">
+                Active Placement Streak
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
         <Card className="rounded-none border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] bg-white hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] transition-transform rotate-1">
           <CardContent className="p-6 flex flex-col justify-between h-48">
             <div className="w-14 h-14 bg-[#90c0ff] border-4 border-black rounded-none flex items-center justify-center text-black mb-4">
               <Star className="w-8 h-8" />
             </div>
             <div>
-              <h2 className="text-5xl font-black text-black">{xpRecord?.totalXp || 150}</h2>
+              <h2 className="text-5xl font-black text-black">{xpRecord?.totalXp || 450}</h2>
               <p className="text-sm font-black text-white bg-black inline-block px-2 py-1 uppercase tracking-widest mt-2">Total XP</p>
             </div>
           </CardContent>
         </Card>
+
         <Card className="rounded-none border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] bg-[#ffe500] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] transition-transform -rotate-1">
           <CardContent className="p-6 flex flex-col justify-between h-48">
             <div className="w-14 h-14 bg-white border-4 border-black rounded-none flex items-center justify-center text-black mb-4">
               <Trophy className="w-8 h-8" />
             </div>
             <div>
-              <h2 className="text-5xl font-black text-black">{xpRecord?.currentLevel || 2}</h2>
+              <h2 className="text-5xl font-black text-black">{xpRecord?.currentLevel || 3}</h2>
               <p className="text-sm font-black text-white bg-black inline-block px-2 py-1 uppercase tracking-widest mt-2">Current Level</p>
             </div>
           </CardContent>
         </Card>
+
         <Card className="rounded-none border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] bg-[#abf5d1] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] transition-transform rotate-1">
           <CardContent className="p-6 flex flex-col justify-between h-48">
             <div className="w-14 h-14 bg-white border-4 border-black rounded-none flex items-center justify-center text-black mb-4">
@@ -85,7 +107,18 @@ export default async function AchievementsPage() {
             </div>
           </CardContent>
         </Card>
+
       </div>
+
+      {/* Shareable LinkedIn & X Social Poster Component */}
+      <ShareablePoster
+        userName={dbUser.name || 'Candidate Name'}
+        streakDays={currentStreak}
+        level={xpRecord?.currentLevel || 3}
+        totalXp={xpRecord?.totalXp || 450}
+        badgesCount={badges.length}
+        certificateId={certificates[0]?.certificateCode || 'P2J-CERT-8921'}
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mt-12">
         {/* Left Column: Badges & Certificates */}
