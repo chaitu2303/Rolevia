@@ -8,6 +8,7 @@ import {
   Sparkles, ArrowRight, Target, Brain, Briefcase, Award, 
   CheckCircle, FileText, Zap, BookOpen, ShieldCheck, TrendingUp, Users 
 } from 'lucide-react';
+import { AtsDemo } from '@/components/AtsDemo';
 
 export default function Home() {
   return (
@@ -287,6 +288,9 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ATS Analyzer Demo Section */}
+      <AtsDemo />
+
       {/* Call to Action */}
       <section className="w-full bg-[#FFE500] border-t-8 border-black py-20 px-6">
         <div className="max-w-4xl mx-auto text-center space-y-8">
@@ -308,8 +312,9 @@ export default function Home() {
       <footer className="w-full bg-black text-white py-12 px-6 border-t-8 border-black">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <Logo size="sm" />
-          <div className="text-xs font-black uppercase text-gray-400">
-            © 2026 Placement2Job Inc. All Rights Reserved. Complete Career Operating System.
+          <div className="text-xs font-black uppercase text-gray-400 text-center">
+            © 2026 Placement2Job Inc. All Rights Reserved. Complete Career Operating System. <br/>
+            <span className="text-[#23a094]">Developed by CS Vertex</span>
           </div>
           <div className="flex gap-6 font-black text-xs uppercase">
             <Link href="/login" className="hover:text-[#FFE500]">Login</Link>
