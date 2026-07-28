@@ -58,7 +58,7 @@ export async function POST(req: Request) {
 
       const docxBuffer = await Packer.toBuffer(doc);
       
-      return new NextResponse(docxBuffer, {
+      return new NextResponse(docxBuffer as any, {
         headers: {
           'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
           'Content-Disposition': `attachment; filename="converted_${file.name.replace(/\.[^/.]+$/, "")}.docx"`
@@ -75,7 +75,7 @@ export async function POST(req: Request) {
           pdfDoc.on('data', chunk => chunks.push(chunk));
           pdfDoc.on('end', () => {
             const pdfBuffer = Buffer.concat(chunks);
-            resolve(new NextResponse(pdfBuffer, {
+            resolve(new NextResponse(pdfBuffer as any, {
               headers: {
                 'Content-Type': 'application/pdf',
                 'Content-Disposition': `attachment; filename="converted_${file.name.replace(/\.[^/.]+$/, "")}.pdf"`
