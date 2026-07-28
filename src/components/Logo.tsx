@@ -1,58 +1,73 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 
 interface LogoProps {
   className?: string;
   showText?: boolean;
   size?: 'sm' | 'md' | 'lg' | 'xl';
+  href?: string;
 }
 
-export function Logo({ className = '', showText = true, size = 'md' }: LogoProps) {
+export function Logo({ className = '', showText = true, size = 'md', href = '/' }: LogoProps) {
+  const iconSizes = {
+    sm: 32,
+    md: 40,
+    lg: 52,
+    xl: 64,
+  };
   const textSizes = {
-    sm: 'text-xl',
+    sm: 'text-lg',
     md: 'text-2xl',
-    lg: 'text-4xl',
-    xl: 'text-5xl'
+    lg: 'text-3xl',
+    xl: 'text-4xl',
   };
 
-  const iconSizes = {
-    sm: 'w-6 h-6',
-    md: 'w-8 h-8',
-    lg: 'w-10 h-10',
-    xl: 'w-12 h-12'
-  };
+  const px = iconSizes[size];
+
+  const mark = (
+    <div className={`relative shrink-0 select-none`} style={{ width: px, height: px }}>
+      <svg viewBox="0 0 64 64" width={px} height={px} fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Main black square */}
+        <rect width="64" height="64" fill="#000000"/>
+        {/* Pink corner accent */}
+        <rect x="44" y="0" width="20" height="20" fill="#FF90E8"/>
+        {/* Yellow corner accent */}
+        <rect x="0" y="44" width="20" height="20" fill="#FFE500"/>
+        {/* Teal corner accent */}
+        <rect x="44" y="44" width="20" height="20" fill="#23A094"/>
+        {/* P letter */}
+        <text x="7" y="46" fontFamily="Arial Black, Impact, sans-serif" fontWeight="900" fontSize="42" fill="#FFFFFF">P</text>
+        {/* 2 accent */}
+        <text x="36" y="27" fontFamily="Arial Black, Impact, sans-serif" fontWeight="900" fontSize="22" fill="#FF90E8">2</text>
+      </svg>
+    </div>
+  );
+
+  const text = showText && (
+    <div className={`flex items-baseline font-black tracking-tighter leading-none ${textSizes[size]}`}>
+      <span className="text-black dark:text-white">Placement</span>
+      <span
+        className="mx-0.5 font-black"
+        style={{
+          background: 'linear-gradient(135deg, #FF90E8 0%, #23A094 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+        }}
+      >
+        2
+      </span>
+      <span className="text-black dark:text-white">Job</span>
+    </div>
+  );
 
   return (
-    <div className={`flex items-center gap-2.5 select-none group cursor-pointer ${className}`}>
-      {/* Corporate Abstract Icon (TCS / Infosys style) */}
-      <div className={`relative shrink-0 flex items-center justify-center transition-opacity duration-300 group-hover:opacity-85 ${iconSizes[size]}`}>
-        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-          {/* Outer Corporate Hexagon */}
-          <path d="M32 4L60 18V46L32 60L4 46V18L32 4Z" fill="#0A3D62"/>
-          {/* Inner Layer */}
-          <path d="M32 10L52 20V42L32 52L12 42V20L32 10Z" fill="#1572B6"/>
-          {/* Core White Geometric Shape */}
-          <path d="M32 20L44 26V38L32 44L20 38V26L32 20Z" fill="#FFFFFF"/>
-          {/* Center Dot */}
-          <circle cx="32" cy="32" r="4" fill="#0A3D62"/>
-        </svg>
+    <Link href={href} className={`inline-flex items-center gap-3 group cursor-pointer ${className}`}>
+      <div className="transition-transform duration-200 group-hover:scale-95 group-hover:-rotate-1">
+        {mark}
       </div>
-
-      {/* Corporate Typography */}
-      {showText && (
-        <div className={`flex items-baseline font-bold tracking-tight font-sans ${textSizes[size]}`}>
-          <span className="text-[#0A3D62] dark:text-white">
-            Placement
-          </span>
-          <span className="text-[#1572B6] mx-0.5 font-black">
-            2
-          </span>
-          <span className="text-[#0A3D62] dark:text-white">
-            Job
-          </span>
-        </div>
-      )}
-    </div>
+      {text}
+    </Link>
   );
 }
