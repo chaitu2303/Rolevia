@@ -1,7 +1,25 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
-import { isAiAvailable, askGateway } from '@/lib/ai/gateway';
+import { isAiAvailable, extractEntities } from '@/lib/ai/gateway';
+import { z } from 'zod';
+
+const ATSAnalysisSchema = z.object({
+  score: z.number().describe('Overall ATS Match Score from 0 to 100'),
+  breakdown: z.object({
+    hardSkillsMatch: z.number().describe('Score out of 100 for hard skills matching'),
+    actionVerbsMatch: z.number().describe('Score out of 100 for action verbs impact'),
+    atsReadability: z.number().describe('Score out of 100 for ATS parsing readability')
+  }),
+  actionableChanges: z.array(z.object({
+    type: z.string(),
+    severity: z.enum(['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']),
+    title: z.string(),
+    description: z.string(),
+    action: z.string()
+  })).describe('List of exact, actionable changes the candidate must make to pass the ATS'),
+  tailoredResume: z.string().describe('A complete, fully tailored plain text resume (Name, Contact, Summary, Experience, Skills, Education) that perfectly aligns with the job description.')
+});
 
 export async function POST(req: Request) {
   try {
@@ -22,7 +40,7 @@ export async function POST(req: Request) {
           include: { basics: true, skills: true, experiences: true, projects: true, educations: true }
         }, 
         resumes: {
-          select: { id: true, title: true, content: true, atsScore: true }
+          select: { id: true, title: true, content: true }
         }
       }
     });
@@ -33,146 +51,52 @@ export async function POST(req: Request) {
 
     const profile = user.careerProfile;
     const masterProfileText = [
-      profile?.basics?.name || '',
+      profile?.basics?.name || user.name || '',
       profile?.basics?.summary || '',
       ...(profile?.skills || []).map((s: any) => s.name),
       ...(profile?.experiences || []).map((e: any) => `${e.role} ${e.company} ${e.description} ${(e.bullets || []).join(' ')}`),
       ...(profile?.projects || []).map((p: any) => `${p.name} ${p.description} ${(p.bullets || []).join(' ')}`),
       ...(user.resumes || []).map((r: any) => r.content ? JSON.stringify(r.content) : '')
-    ].join(' ').toLowerCase();
+    ].join(' ').trim();
 
-    // Technical Keywords & Framework Dictionary
-    const TECH_DICTIONARY = [
-      'react', 'next.js', 'nextjs', 'node.js', 'nodejs', 'typescript', 'javascript',
-      'python', 'java', 'c++', 'go', 'golang', 'rust', 'express', 'nest.js',
-      'postgresql', 'postgres', 'mysql', 'mongodb', 'redis', 'prisma', 'graphql',
-      'rest api', 'aws', 'docker', 'kubernetes', 'ci/cd', 'git', 'system design',
-      'microservices', 'tailwind', 'tailwindcss', 'redux', 'jest', 'cypress', 'html5', 'css3'
-    ];
+    if (!isAiAvailable()) {
+      return NextResponse.json({ error: 'AI Gateway is currently offline. Please configure your Ollama or OpenAI keys.' }, { status: 503 });
+    }
 
-    const jdLower = jobDescription.toLowerCase();
+    const prompt = `
+You are an expert ATS (Applicant Tracking System) algorithm and a Senior Executive Resume Writer. 
+Your task is to analyze a candidate's Master Profile against a Job Description.
 
-    // 1. Extract Hard Skills from JD
-    const jdSkillsFound = TECH_DICTIONARY.filter(tech => jdLower.includes(tech));
-    
-    // Fallback: extract prominent capitalized terms or tech-like words if dictionary is sparse
-    const wordsInJd = Array.from(new Set(jdLower.match(/\b[a-z0-9\.+#-]{3,}\b/g) || []));
-    const customTechTerms = wordsInJd.filter(w => 
-      !['with', 'from', 'this', 'that', 'have', 'your', 'will', 'team', 'work', 'experience', 'years', 'ability', 'strong', 'good'].includes(w) &&
-      (w.includes('js') || w.includes('sql') || w.includes('api') || w.includes('cloud') || w.includes('data') || w.includes('app'))
-    );
+Job Description:
+"""
+${jobDescription}
+"""
 
-    const targetKeywords = Array.from(new Set([...jdSkillsFound, ...customTechTerms])).slice(0, 15);
+Candidate Master Profile Database:
+"""
+${masterProfileText}
+"""
 
-    const matchedSkills: string[] = [];
-    const missingSkills: string[] = [];
+Instructions:
+1. Calculate a strict, highly accurate ATS Match score (0-100). Be ruthless; if they lack required skills, score them low.
+2. Provide a breakdown for Hard Skills, Action Verbs, and Readability.
+3. Generate specific, actionable instructions for exactly what they must add or change in their resume.
+4. Finally, write a completely new, flawless 'Tailored Resume' based on their Master Profile that maximizes their ATS score for this specific job. Use strong action verbs and metrics.
+`;
 
-    targetKeywords.forEach(kw => {
-      if (masterProfileText.includes(kw)) {
-        matchedSkills.push(kw.toUpperCase());
-      } else {
-        missingSkills.push(kw.toUpperCase());
-      }
+    const aiResult = await extractEntities(prompt, ATSAnalysisSchema, {
+      systemPrompt: 'You are an elite, highly accurate ATS Resume parsing AI. Always output valid JSON conforming to the requested schema.'
     });
 
-    // 2. Action Verbs Evaluation
-    const STRONG_ACTION_VERBS = [
-      'engineered', 'architected', 'spearheaded', 'optimized', 'implemented',
-      'developed', 'scaled', 'accelerated', 'transformed', 'built', 'reduced'
-    ];
-    const verbsFound = STRONG_ACTION_VERBS.filter(verb => masterProfileText.includes(verb));
-    const verbScore = Math.min(100, Math.round((verbsFound.length / 4) * 100));
-
-    // 3. Formatting & Contact Check
-    const hasEmail = Boolean(profile?.basics?.email || user.email);
-    const hasPhone = Boolean(profile?.basics?.phone);
-    const hasLinkedin = Boolean(profile?.basics?.linkedinUrl);
-    const readabilityScore = (hasEmail ? 40 : 0) + (hasPhone ? 30 : 0) + (hasLinkedin ? 30 : 0);
-
-    // 4. Calculate Weighted ATS Match Score
-    const skillScore = targetKeywords.length > 0
-      ? Math.round((matchedSkills.length / targetKeywords.length) * 100)
-      : 75;
-
-    const overallScore = Math.round(
-      (skillScore * 0.50) + (verbScore * 0.30) + (readabilityScore * 0.20)
-    );
-
-    // 5. Generate Explicit Actionable Changes Required
-    const actionableChanges = [];
-
-    if (missingSkills.length > 0) {
-      actionableChanges.push({
-        type: 'MISSING_KEYWORDS',
-        severity: 'CRITICAL',
-        title: 'Add Missing Technical Keywords',
-        description: `Your resume is currently missing key recruitment terms: ${missingSkills.slice(0, 6).join(', ')}.`,
-        action: `Add a "Core Technologies" group under Skills section containing: ${missingSkills.slice(0, 6).join(', ')}.`
-      });
-    }
-
-    if (verbScore < 70) {
-      actionableChanges.push({
-        type: 'WEAK_VERBS',
-        severity: 'HIGH',
-        title: 'Upgrade Experience Action Verbs with Quantifiable Impact',
-        description: 'Your bullet points use passive descriptions ("worked on", "responsible for").',
-        action: 'Rewrite bullet points using high-impact verbs like "Engineered", "Architected", or "Optimized", and include % metrics (e.g. "Reduced API response latency by 35%").'
-      });
-    }
-
-    if (!hasLinkedin || !hasPhone) {
-      actionableChanges.push({
-        type: 'FORMATTING',
-        severity: 'MEDIUM',
-        title: 'Complete Professional Header Links',
-        description: 'Missing direct LinkedIn profile or phone number in contact header.',
-        action: 'Add your LinkedIn profile URL and phone number at the top of your resume for 100% parser readability.'
-      });
-    }
-
-    // 6. Generate Tailored Resume Output
-    const candidateName = profile?.basics?.name || user.name || 'Candidate Name';
-    const candidateEmail = profile?.basics?.email || user.email;
-    const candidatePhone = profile?.basics?.phone || '+1 (555) 019-2834';
-    const candidateLocation = profile?.basics?.location || 'New York, NY';
-    
-    const tailoredResume = `
-${candidateName.toUpperCase()}
-${candidateEmail} | ${candidatePhone} | ${candidateLocation} | linkedin.com/in/profile
-
-PROFESSIONAL SUMMARY
-Results-driven Software Engineer specialized in ${matchedSkills.slice(0, 3).join(', ') || 'modern software architecture'}. Experienced in designing scalable backend APIs and responsive user interfaces. Leveraged ${[...matchedSkills, ...missingSkills].slice(0, 4).join(', ')} to deliver robust production systems aligned with recruitment standards.
-
-TECHNICAL SKILLS
-• Mastered Technologies: ${matchedSkills.join(', ') || 'JavaScript, React, Node.js, HTML5, CSS3'}
-• Target Stack Additions: ${missingSkills.join(', ') || 'TypeScript, Next.js, PostgreSQL, Docker'}
-
-PROFESSIONAL EXPERIENCE
-Senior Software Engineer | Target Tech Corp
-• Engineered high-performance RESTful microservices utilizing ${matchedSkills[0] || 'Node.js'} and ${missingSkills[0] || 'PostgreSQL'}, accelerating query execution by 40%.
-• Spearheaded frontend component refactoring using ${matchedSkills[1] || 'React'} and ${missingSkills[1] || 'TypeScript'}, improving Core Web Vitals performance score to 98%.
-• Optimized CI/CD build pipelines and automated testing, reducing production deployment errors by 50%.
-
-EDUCATION
-Bachelor of Science in Computer Science & Engineering | Accredited University
-    `.trim();
-
     return NextResponse.json({
-      score: overallScore,
-      breakdown: {
-        hardSkillsMatch: skillScore,
-        actionVerbsMatch: verbScore,
-        atsReadability: readabilityScore
-      },
-      matchedSkills: matchedSkills.slice(0, 12),
-      missingSkills: missingSkills.slice(0, 12),
-      actionableChanges,
-      tailoredResume
+      score: aiResult.score,
+      breakdown: aiResult.breakdown,
+      actionableChanges: aiResult.actionableChanges,
+      tailoredResume: aiResult.tailoredResume
     });
 
   } catch (error: any) {
-    console.error('ATS Analysis Error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error('ATS Analysis AI Error:', error);
+    return NextResponse.json({ error: 'AI Analysis Failed: ' + error.message }, { status: 500 });
   }
 }

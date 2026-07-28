@@ -14,57 +14,52 @@ import {
 
 const navGroups = [
   {
-    label: 'Career Identity',
+    label: 'Core Dashboard',
     items: [
       { href: '/dashboard', label: 'Command Center', icon: LayoutDashboard, exact: true },
+      { href: '/dashboard/notifications', label: 'Notifications', icon: Bell },
+    ]
+  },
+  {
+    label: 'Target & Prepare',
+    items: [
       { href: '/dashboard/profile', label: 'Master Profile', icon: UserCircle },
-      { href: '/dashboard/memory', label: 'Career Memory', icon: Database },
-      { href: '/dashboard/passport', label: 'Career Passport', icon: Compass },
-    ]
-  },
-  {
-    label: 'Job Preparation',
-    items: [
       { href: '/dashboard/jobs', label: 'Job Intelligence', icon: Briefcase },
+      { href: '/dashboard/ats', label: 'ATS Analyzer', icon: Target },
       { href: '/dashboard/resumes', label: 'Resume Studio', icon: FileText },
-      { href: '/dashboard/ats', label: 'ATS Analysis', icon: Target },
     ]
   },
   {
-    label: 'Practice Arena',
+    label: 'Learn & Practice',
     items: [
-      { href: '/dashboard/assess', label: 'Assessments', icon: MonitorCheck },
+      { href: '/dashboard/learn', label: 'Skill Roadmaps', icon: BookOpen },
       { href: '/dashboard/code', label: 'Coding Arena', icon: Code2 },
-      { href: '/dashboard/learn', label: 'Department Practice', icon: BookOpen },
+      { href: '/dashboard/assess', label: 'Assessments', icon: MonitorCheck },
     ]
   },
   {
-    label: 'Interview Lab',
+    label: 'Interview Engine',
     items: [
       { href: '/dashboard/interview', label: 'Mock Interviews', icon: Brain },
-      { href: '/dashboard/simulations', label: 'Recruitment Simulator', icon: Bot },
+      { href: '/dashboard/simulations', label: 'Full Recruitment Simulator', icon: Bot },
     ]
   },
   {
-    label: 'Job Search',
+    label: 'Track & Apply',
     items: [
-      { href: '/dashboard/copilot', label: 'Application Copilot', icon: Zap },
-      { href: '/dashboard/applications', label: 'Application Tracker', icon: FileCog },
+      { href: '/dashboard/copilot', label: 'Auto-Apply Copilot', icon: Zap },
+      { href: '/dashboard/applications', label: 'Kanban Tracker', icon: FileCog },
       { href: '/dashboard/tools/company-intel', label: 'Company Intel', icon: Building2 },
       { href: '/dashboard/tools/salary-negotiation', label: 'Salary Negotiator', icon: DollarSign },
     ]
   },
   {
-    label: 'Growth',
+    label: 'Metrics & Growth',
     items: [
       { href: '/dashboard/analytics', label: 'Performance', icon: BarChart3 },
-      { href: '/dashboard/achievements', label: 'Streaks & Badges', icon: Trophy },
-    ]
-  },
-  {
-    label: 'Utility Studio',
-    items: [
-      { href: '/dashboard/tools', label: 'Utility Studio', icon: Settings },
+      { href: '/dashboard/achievements', label: 'Streaks & Rewards', icon: Trophy },
+      { href: '/dashboard/memory', label: 'Career Memory', icon: Database },
+      { href: '/dashboard/passport', label: 'Career Passport', icon: Compass },
     ]
   }
 ];
