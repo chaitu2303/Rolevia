@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
-import { isAiAvailable, askGateway } from '@/lib/ai/gateway';
+import { isAiAvailable, extractEntities } from '@/lib/ai/gateway';
+import { z } from 'zod';
 
 export interface AgentDecision {
   nextAction: 'ASK_NEW' | 'FOLLOW_UP' | 'CHALLENGE' | 'TRANSITION' | 'END_INTERVIEW';
@@ -7,6 +8,12 @@ export interface AgentDecision {
   questionText?: string;
   evaluation?: any;
 }
+
+const InterviewTurnSchema = z.object({
+  reply: z.string().describe('The professional interviewer response or next question'),
+  action: z.enum(['ASK_NEW', 'FOLLOW_UP', 'END_INTERVIEW']).describe('The action to take next'),
+  score: z.number().describe('A score from 0-100 evaluating the candidate\'s latest answer based on the role requirements')
+});
 
 export class InterviewOrchestrator {
   /**
@@ -49,127 +56,50 @@ export class InterviewOrchestrator {
     if (session && session.userId !== userId) throw new Error('Unauthorized');
     if (!session) throw new Error('Session not found');
 
-    let isAiReady = false;
-    try {
-      isAiReady = isAiAvailable();
-    } catch(e) { }
-
-    if (!isAiReady) {
-      // Use Native Intelligence static/scripted fallback
-      const log = Array.isArray(session.conversationLog) ? (session.conversationLog as any[]) : [];
-      const turnCount = Math.floor(log.length / 2);
-
-      let nextQuestion = 'Thank you for that response. Can you elaborate further?';
-      let nextAction: 'ASK_NEW' | 'FOLLOW_UP' | 'END_INTERVIEW' = 'ASK_NEW';
-      let status = session.status;
-      const isTech = session.type === 'TECHNICAL';
-
-      if (turnCount === 0) {
-        nextQuestion = isTech 
-          ? `Welcome to your Technical Interview for ${session.targetRole}! Let's start with a foundational question: Explain your approach to designing a scalable RESTful API with proper caching and rate limiting.`
-          : `Hello! Welcome to your HR Interview for ${session.targetRole}. Let's begin: Tell me about yourself, your career journey, and why you are interested in this position.`;
-      } else if (turnCount === 1) {
-        nextQuestion = isTech
-          ? "Great answer. Now, how would you handle database connection pooling and query performance optimization under high concurrency?"
-          : "Thank you. Can you describe a challenging conflict you experienced with a team member or stakeholder, and how you resolved it using the STAR framework?";
-      } else if (turnCount === 2) {
-        nextQuestion = isTech
-          ? "Excellent. If you encounter a memory leak or CPU spike in a production environment, what step-by-step diagnostic process do you follow?"
-          : "What are your salary expectations for this role, and how do you handle unexpected shifts in project priorities or scope changes?";
-      } else if (turnCount >= 3) {
-        nextQuestion = "Thank you for completing this interview session! We have recorded your responses and generated a comprehensive evaluation report.";
-        nextAction = 'END_INTERVIEW';
-        status = 'COMPLETED';
-      }
-
-      const updatedLog = [
-        ...log,
-        { role: 'user', content: candidateAnswer, timestamp: new Date().toISOString() },
-        { role: 'assistant', content: nextQuestion, timestamp: new Date().toISOString() }
-      ];
-
-      const score = Math.min(100, 75 + Math.floor(Math.random() * 20));
-
-      await prisma.interviewSession.update({
-        where: { id: sessionId },
-        data: {
-          conversationLog: updatedLog,
-          status,
-          ...(status === 'COMPLETED' ? { completedAt: new Date() } : {})
-        }
-      });
-
-      return {
-        reply: nextQuestion,
-        action: nextAction,
-        isNativeIntelligence: true,
-        score: score
-      };
+    if (!isAiAvailable()) {
+      throw new Error('AI_UNAVAILABLE');
     }
 
-    try {
-      const log = Array.isArray(session.conversationLog) ? (session.conversationLog as any[]) : [];
-      const prompt = `You are an expert ${session.type} interviewer conducting an interview for a ${session.targetRole} (${session.difficulty} level).
-Candidate Answer: "${candidateAnswer}".
-Previous Conversation History: ${JSON.stringify(log.slice(-6))}.
-Generate the next professional, engaging ${session.type === 'TECHNICAL' ? 'technical/coding/architecture' : 'behavioral/HR/STAR-method'} question or feedback. Respond with concise JSON: {"reply": "...", "action": "ASK_NEW" | "FOLLOW_UP" | "END_INTERVIEW"}`;
+    const log = Array.isArray(session.conversationLog) ? (session.conversationLog as any[]) : [];
+    
+    const prompt = \`
+You are an expert \${session.type} interviewer conducting an interview for a \${session.targetRole} (\${session.difficulty} level).
+Candidate's Latest Answer: "\${candidateAnswer}".
+Previous Conversation History: \${JSON.stringify(log.slice(-6))}.
 
-      const aiText = await askGateway(prompt);
-      let parsed = { reply: "Thank you for your answer. Can you expand on the key metrics?", action: "ASK_NEW" as string };
-      try {
-        parsed = JSON.parse(aiText);
-      } catch (e) {
-        parsed.reply = aiText;
+Instructions:
+1. Evaluate the candidate's latest answer out of 100 based on standard industry expectations for a \${session.targetRole}.
+2. Generate the next professional, engaging \${session.type === 'TECHNICAL' ? 'technical/coding/architecture' : 'behavioral/HR/STAR-method'} question or feedback.
+3. If this is the 5th or 6th turn, or the candidate has answered excellently across the board, choose "END_INTERVIEW" and thank them.
+\`;
+
+    const aiResult = await extractEntities(prompt, InterviewTurnSchema, {
+      systemPrompt: 'You are an elite automated Interview AI. Output valid JSON strictly conforming to the requested schema. Maintain a professional, conversational tone.'
+    });
+
+    const updatedLog = [
+      ...log,
+      { role: 'user', content: candidateAnswer, timestamp: new Date().toISOString() },
+      { role: 'assistant', content: aiResult.reply, timestamp: new Date().toISOString() }
+    ];
+
+    const status = aiResult.action === 'END_INTERVIEW' ? 'COMPLETED' : session.status;
+
+    await prisma.interviewSession.update({
+      where: { id: sessionId },
+      data: {
+        conversationLog: updatedLog,
+        status,
+        ...(status === 'COMPLETED' ? { completedAt: new Date() } : {})
       }
+    });
 
-      const updatedLog = [
-        ...log,
-        { role: 'user', content: candidateAnswer, timestamp: new Date().toISOString() },
-        { role: 'assistant', content: parsed.reply, timestamp: new Date().toISOString() }
-      ];
-
-      const status = parsed.action === 'END_INTERVIEW' ? 'COMPLETED' : session.status;
-
-      await prisma.interviewSession.update({
-        where: { id: sessionId },
-        data: {
-          conversationLog: updatedLog,
-          status,
-          ...(status === 'COMPLETED' ? { completedAt: new Date() } : {})
-        }
-      });
-
-      return {
-        reply: parsed.reply,
-        action: parsed.action,
-        isNativeIntelligence: false,
-        score: 88
-      };
-    } catch (err) {
-      // Fallback cleanly
-      const log = Array.isArray(session.conversationLog) ? (session.conversationLog as any[]) : [];
-      const nextQuestion = session.type === 'TECHNICAL'
-        ? "Can you walk through your process for debugging complex distributed systems issues?"
-        : "Describe a project where you demonstrated leadership or initiative beyond your assigned responsibilities.";
-      
-      const updatedLog = [
-        ...log,
-        { role: 'user', content: candidateAnswer, timestamp: new Date().toISOString() },
-        { role: 'assistant', content: nextQuestion, timestamp: new Date().toISOString() }
-      ];
-
-      await prisma.interviewSession.update({
-        where: { id: sessionId },
-        data: { conversationLog: updatedLog }
-      });
-
-      return {
-        reply: nextQuestion,
-        action: 'ASK_NEW',
-        isNativeIntelligence: true,
-        score: 82
-      };
-    }
+    return {
+      reply: aiResult.reply,
+      action: aiResult.action,
+      isNativeIntelligence: false,
+      score: aiResult.score
+    };
   }
 
   static async endSession(sessionId: string) {
