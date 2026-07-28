@@ -1,0 +1,1242 @@
+{
+  "description": "30 Seconds of Interviews Dataset (Chalarangelo)",
+  "source": "GitHub - Chalarangelo/30-seconds-of-interviews",
+  "questions": [
+    {
+      "role": "Software Engineer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to accessibility?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies accessibility"
+      ]
+    },
+    {
+      "role": "Software Engineer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to accessibility?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies accessibility"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to html?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies html"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to html?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies html"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to css?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies css"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to html?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies html"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to node?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies node"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Software Engineer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to css?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies css"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to css?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies css"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to css?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies css"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to css?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies css"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to html?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies html"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to css?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies css"
+      ]
+    },
+    {
+      "role": "Software Engineer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to css?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies css"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to css?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies css"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Software Engineer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to html?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies html"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to html?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies html"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to html?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies html"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to html?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies html"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to html?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies html"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Software Engineer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to accessibility?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies accessibility"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Software Engineer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Software Engineer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Software Engineer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to css?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies css"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to node?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies node"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to node?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies node"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Software Engineer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Software Engineer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to html?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies html"
+      ]
+    },
+    {
+      "role": "Software Engineer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to node?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies node"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to css?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies css"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to react?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies react"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to javascript?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies javascript"
+      ]
+    },
+    {
+      "role": "Software Engineer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to accessibility?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies accessibility"
+      ]
+    },
+    {
+      "role": "Frontend Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "",
+      "expected_answer": "",
+      "follow_up": "Can you explain more about how this relates to security?",
+      "evaluation_rubric": [
+        "Understands core concepts",
+        "Correctly applies security"
+      ]
+    }
+  ]
+}

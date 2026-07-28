@@ -1,0 +1,15 @@
+{
+  "description": "Master Skills Taxonomy",
+  "source": "ESCO / O*NET / Kaggle",
+  "skills": [
+    {
+      "name": "Java",
+      "aliases": ["Java Programming", "Core Java", "J2EE"],
+      "difficulty": "Intermediate",
+      "category": "Backend Development",
+      "related_skills": ["Spring", "Hibernate", "Maven"],
+      "keywords": ["java", "jdk", "jre", "jvm"],
+      "weight": 1.0
+    }
+  ]
+}

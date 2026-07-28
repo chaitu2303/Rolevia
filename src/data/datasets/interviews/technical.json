@@ -1,0 +1,17 @@
+{
+  "description": "Technical Interview Questions",
+  "questions": [
+    {
+      "role": "Java Developer",
+      "round": "Technical",
+      "difficulty": "Medium",
+      "question": "What is JVM and how does it relate to JRE and JDK?",
+      "expected_answer": "JVM (Java Virtual Machine) executes Java bytecode. JRE contains JVM + libraries. JDK contains JRE + development tools.",
+      "follow_up": "Can you explain the classloader subsystem?",
+      "evaluation_rubric": [
+        "Mentions bytecode execution",
+        "Correctly distinguishes JRE (runtime) vs JDK (development)"
+      ]
+    }
+  ]
+}
