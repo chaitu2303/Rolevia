@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     }
 
     const profile = await CareerIntelligenceEngine.Grounding.getGroundedProfile(dbUser.id);
-    const jobData = CareerIntelligenceEngine.Job.analyze(text, profile);
+    const jobData = await CareerIntelligenceEngine.Job.analyze(text, profile);
 
     // ── Stage 2: Persist the JobTarget ─────────────────────────────────────
     const jobTarget = await prisma.jobTarget.create({

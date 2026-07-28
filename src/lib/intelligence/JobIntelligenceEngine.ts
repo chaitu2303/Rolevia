@@ -1,107 +1,68 @@
 import { GroundedProfile } from './EvidenceGroundingEngine';
 
+import { z } from 'zod';
+import { isAiAvailable, extractEntities } from '@/lib/ai/gateway';
+import { GroundedProfile } from './EvidenceGroundingEngine';
+
+const JobAnalysisSchema = z.object({
+  roleTitle: z.string().describe('The official role title of the job'),
+  company: z.string().describe('The name of the company hiring'),
+  extractedSkills: z.object({
+    required: z.array(z.string()).describe('List of strictly required technical skills and domain skills'),
+    preferred: z.array(z.string()).describe('List of bonus or preferred skills'),
+    tools: z.array(z.string()).describe('Specific software, tools, or platforms mentioned')
+  }),
+  extractedReqs: z.object({
+    experience: z.number().describe('Minimum years of experience required (estimate if not explicit)'),
+    education: z.array(z.string()).describe('Required education degrees or certifications'),
+    responsibilities: z.array(z.string()).describe('Top 3-5 core responsibilities')
+  }),
+  keywords: z.array(z.string()).describe('10-15 key words or phrases crucial for ATS matching'),
+  matchAnalysis: z.object({
+    overallScore: z.number().describe('Score out of 100 for overall fit based on candidate profile'),
+    skillMatchScore: z.number().describe('Score out of 100 purely on skills match'),
+    experienceMatchScore: z.number().describe('Score out of 100 on years of experience and domain relevance'),
+    missingSkills: z.array(z.string()).describe('Important skills required by JD but missing in profile'),
+    matchingSkills: z.array(z.string()).describe('Skills present in both JD and profile'),
+    recommendations: z.array(z.string()).describe('Actionable advice for the candidate to improve their chances')
+  })
+});
+
 export class JobIntelligenceEngine {
-  static analyze(jobDescription: string, profile: GroundedProfile | null) {
-    const text = jobDescription.toLowerCase();
-
-    // A slightly broader local dictionary
-    const techDictionary = [
-      'javascript', 'typescript', 'react', 'next.js', 'node.js', 'python',
-      'java', 'c++', 'c#', 'sql', 'postgresql', 'mysql', 'docker', 'kubernetes', 'aws',
-      'gcp', 'azure', 'machine learning', 'ai', 'tailwind', 'prisma', 'mongodb',
-      'redis', 'graphql', 'rest', 'agile', 'scrum', 'ci/cd', 'git', 'linux'
-    ];
-
-    const extractedRequiredSkills = [];
-    const extractedPreferredSkills = [];
-
-    // Simple heuristic: if the word "preferred" or "bonus" or "plus" is near a skill, it's preferred.
-    // Otherwise required.
-    for (const skill of techDictionary) {
-      // Escape regex special chars and avoid \b if it's not a word char
-      const escapedSkill = skill.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      // For skills like c++, \b doesn't work well at the end because + is not a word character.
-      // We will just pad it with a non-word boundary check or use a simpler match.
-      const isAlphaNum = /^\w+$/.test(skill);
-      // For non-alphanumeric trailing chars, we use a simpler boundary check
-      const regex = new RegExp(isAlphaNum ? `\\b${escapedSkill}\\b` : `(?:^|\\W)${escapedSkill}(?:\\W|$)`, 'i');
-      const match = regex.exec(text);
-      if (match) {
-        // Look at the text 50 chars before the match
-        const contextBefore = text.substring(Math.max(0, match.index - 50), match.index);
-        if (contextBefore.includes('prefer') || contextBefore.includes('bonus') || contextBefore.includes('plus')) {
-          extractedPreferredSkills.push(skill);
-        } else {
-          extractedRequiredSkills.push(skill);
-        }
-      }
+  static async analyze(jobDescription: string, profile: GroundedProfile | null) {
+    if (!isAiAvailable()) {
+      throw new Error('AI Gateway is currently offline. Please configure your Ollama or API keys.');
     }
 
-    // Determine Job Title from first line
-    const lines = jobDescription.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-    const inferredRoleTitle = lines.length > 0 ? lines[0] : 'Unknown Role';
-    const inferredCompany = lines.length > 1 ? lines[1] : 'Unknown Company';
-
-    return {
-      roleTitle: inferredRoleTitle,
-      company: inferredCompany,
-      extractedSkills: {
-        required: extractedRequiredSkills,
-        preferred: extractedPreferredSkills,
-        tools: []
-      },
-      extractedReqs: {
-        experience: text.includes('senior') ? 5 : text.includes('junior') ? 1 : 3,
-        education: text.includes('master') ? ['Master\'s Degree'] : ['Bachelor\'s Degree'],
-        responsibilities: []
-      },
-      keywords: [...extractedRequiredSkills, ...extractedPreferredSkills],
-      matchAnalysis: this.calculateMatch(extractedRequiredSkills, extractedPreferredSkills, profile)
-    };
-  }
-
-  private static calculateMatch(required: string[], preferred: string[], profile: GroundedProfile | null) {
-    if (!profile) {
-      return {
-        overallScore: 0,
-        skillMatchScore: 0,
-        experienceMatchScore: 0,
-        missingSkills: required,
-        matchingSkills: [],
-        recommendations: ['Complete your profile to see match scores.']
-      };
-    }
-
-    const profileSkills = new Set(profile.skills.map(s => (s.name || '').toLowerCase()));
+    const safeProfile = profile || { basics: {}, skills: [], experiences: [], educations: [], projects: [], certifications: [] };
     
-    let matchCount = 0;
-    const matchingSkills = [];
-    const missingSkills = [];
-
-    for (const req of required) {
-      if (profileSkills.has(req.toLowerCase())) {
-        matchCount++;
-        matchingSkills.push(req);
-      } else {
-        missingSkills.push(req);
-      }
-    }
-
-    const skillScore = required.length > 0 ? Math.round((matchCount / required.length) * 100) : 100;
-    const overallScore = skillScore; // Simplified for native engine
-
-    const recommendations = [];
-    if (missingSkills.length > 0) {
-      recommendations.push(`You are missing ${missingSkills.length} required skills. Consider adding them if you have experience.`);
-    }
-
-    return {
-      overallScore,
-      skillMatchScore: skillScore,
-      experienceMatchScore: 100, // Hardcoded for baseline
-      missingSkills,
-      matchingSkills,
-      recommendations
+    // Only pass necessary facts to avoid token bloat
+    const profileContext = {
+      skills: safeProfile.skills.map(s => s.name),
+      experience: safeProfile.experiences.map(e => ({ role: e.role, company: e.company, description: e.description })),
+      education: safeProfile.educations.map(e => e.degree)
     };
+
+    const prompt = \`
+You are an expert Technical Recruiter and ATS AI. Analyze the following Job Description against the Candidate's Profile.
+
+JOB DESCRIPTION:
+"""
+\${jobDescription}
+"""
+
+CANDIDATE PROFILE:
+"""
+\${JSON.stringify(profileContext, null, 2)}
+"""
+
+Extract the exact Job Title, Company, and all requirements from the JD. Then calculate the match scores strictly comparing the JD against the provided Candidate Profile.
+\`;
+
+    const aiResult = await extractEntities(prompt, JobAnalysisSchema, {
+      systemPrompt: 'You are an elite Recruitment AI. Always return valid JSON conforming to the requested schema. Be extremely accurate with your match calculations.'
+    });
+
+    return aiResult;
   }
 }

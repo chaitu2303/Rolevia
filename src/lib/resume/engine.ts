@@ -188,6 +188,8 @@ export function buildResumeFromProfile(profile: GroundedProfile): ResumeContent 
 
 export type TailoringMode = 'CONSERVATIVE' | 'BALANCED' | 'AGGRESSIVE';
 
+import { isAiAvailable, extractEntities } from '@/lib/ai/gateway';
+
 export async function tailorResumeToJob(params: {
   resumeContent: ResumeContent;
   jobRequirements: {
@@ -203,79 +205,63 @@ export async function tailorResumeToJob(params: {
 }) {
   const { resumeContent, jobRequirements, groundedProfile, mode } = params;
 
+  if (!isAiAvailable()) {
+    throw new Error('AI Gateway is currently offline. Please configure your Ollama or API keys to use Resume Tailoring.');
+  }
+
   const modeInstructions = {
     CONSERVATIVE: 'Make minimal changes. Only improve wording and keyword alignment without restructuring.',
     BALANCED: 'Reorder sections and bullets to prioritize relevant experience. Improve wording significantly.',
-    AGGRESSIVE: 'Restructure aggressively. Reorder all sections, rewrite bullets for maximum relevance. Still, never add skills not in the profile.',
+    AGGRESSIVE: 'Restructure aggressively. Rewrite bullets for maximum relevance based strictly on the Master Profile facts.',
   };
 
-  // Build a minimal, fact-indexed context (do NOT send entire DB)
   const profileFactIndex = {
     verifiedSkills: groundedProfile.skills.map(s => ({ id: s.id, name: s.name })),
-    verifiedExperience: groundedProfile.experiences.map(e => ({ id: e.id, role: e.role, company: e.company })),
-    verifiedProjects: groundedProfile.projects.map(p => ({ id: p.id, name: p.name })),
-    verifiedCertifications: groundedProfile.certifications.map(c => ({ id: c.id, name: c.name })),
+    verifiedExperience: groundedProfile.experiences.map(e => ({ id: e.id, role: e.role, company: e.company, description: e.description })),
   };
 
-  // Native Tailoring Rule Engine
-  const changes: TailoringChange[] = [];
-  const rejectedRequirements: string[] = [];
+  const prompt = `
+You are an elite, executive-level Resume Tailoring AI.
+Your objective is to tailor the provided Resume Content to perfectly match the Target Job Requirements.
+You must adhere to the tailoring mode: ${mode} - ${modeInstructions[mode]}
 
-  // 1. Check required skills
-  for (const reqSkill of jobRequirements.requiredSkills) {
-    const hasSkill = groundedProfile.skills.some(s => s.name.toLowerCase() === reqSkill.toLowerCase());
-    if (!hasSkill) {
-      rejectedRequirements.push(reqSkill);
-    }
-  }
+TARGET JOB REQUIREMENTS:
+Job Title: ${jobRequirements.jobTitle}
+Company: ${jobRequirements.company}
+Required Skills: ${jobRequirements.requiredSkills.join(', ')}
+Keywords: ${jobRequirements.keywords.join(', ')}
 
-  // 2. Simple bullet re-ordering based on keywords
-  const keywords = jobRequirements.keywords.map(k => k.toLowerCase());
-  for (const section of resumeContent.sections) {
-    if (section.type === 'experience') {
-      const data = (section as any).data;
-      if (data && data.items) {
-        for (const item of data.items) {
-          if (item.bullets) {
-            // Find bullets with matching keywords
-            item.bullets.forEach((bullet: string, idx: number) => {
-              const lowerBullet = bullet.toLowerCase();
-              if (keywords.some(k => lowerBullet.includes(k))) {
-                changes.push({
-                  sectionType: 'experience',
-                  itemId: item.id,
-                  field: `bullets[${idx}]`,
-                  original: bullet,
-                  proposed: `${bullet} (Highlighted for ${jobRequirements.company})`,
-                  reason: 'Matches target job keywords.',
-                  sourceFactId: item.sourceFactId,
-                  isFabricated: false,
-                });
-              }
-            });
-          }
-        }
-      }
-    }
-  }
+CURRENT RESUME CONTENT (JSON):
+${JSON.stringify(resumeContent.sections, null, 2)}
 
-  const tailoring = { changes, rejectedRequirements };
+VERIFIED PROFILE FACTS (Truth Guard - YOU MAY NOT FABRICATE EXPERIENCE):
+${JSON.stringify(profileFactIndex, null, 2)}
+
+INSTRUCTIONS:
+1. Generate specific changes to the Resume Content (e.g. rewriting experience bullets, adding verified skills).
+2. For each change, you must specify the exact sectionType (e.g. 'experience'), itemId, and field (e.g. 'bullets[0]').
+3. Do NOT add skills or experience that are not present in the VERIFIED PROFILE FACTS. If the job requires a skill the candidate absolutely lacks, add it to 'rejectedRequirements' with a reason.
+4. Maximize ATS score and semantic relevance.
+  `;
+
+  // Call the real AI Gateway
+  const tailoring = await extractEntities(prompt, TailoringResultSchema, {
+    systemPrompt: 'You are a strict, highly capable resume AI. Always return valid JSON conforming to the requested schema. Never hallucinate experience.',
+  });
 
   // ── Truth Guard Pass ──────────────────────────────────────────────────────
   // Post-process: flag any proposed skill insertions not in verified profile
   const verifiedSkillNames = new Set(groundedProfile.skills.map(s => s.name.toLowerCase()));
   const guardedChanges: TailoringChange[] = tailoring.changes.map(change => {
-    // If a change proposes adding a new skill keyword to a skills section
     if (change.sectionType === 'skills' && change.field === 'skills') {
       const proposed = change.proposed.toLowerCase();
-      // Check if every proposed skill exists in the verified profile
       const proposedSkills = proposed.split(/,|\n/).map(s => s.trim()).filter(Boolean);
       const hasUnverified = proposedSkills.some(s => !verifiedSkillNames.has(s));
       if (hasUnverified) {
         return { ...change, isFabricated: true };
       }
     }
-    return change;
+    return { ...change, isFabricated: false }; // Ensure property exists
   });
 
   const fabricatedCount = guardedChanges.filter(c => c.isFabricated).length;

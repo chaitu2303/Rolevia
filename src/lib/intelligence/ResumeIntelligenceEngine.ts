@@ -5,103 +5,80 @@ export class ResumeIntelligenceEngine {
     const adapter = new LocalExtractionAdapter();
     const rawText = await adapter.extract(buffer, mimeType);
     
-    // Deterministic Native Extraction
-    const facts = {
-      basics: this.extractBasics(rawText),
-      skills: this.extractSkills(rawText),
-      experiences: this.extractExperiences(rawText),
-      educations: this.extractEducation(rawText),
-      projects: this.extractProjects(rawText),
-      certifications: []
-    };
+import { LocalExtractionAdapter } from '@/lib/extraction/local-adapter';
+import { z } from 'zod';
+import { isAiAvailable, extractEntities } from '@/lib/ai/gateway';
+
+const ResumeExtractionSchema = z.object({
+  basics: z.object({
+    name: z.string().nullable(),
+    email: z.string().nullable(),
+    phone: z.string().nullable(),
+    location: z.string().nullable(),
+    linkedinUrl: z.string().nullable(),
+    summary: z.string().nullable()
+  }),
+  skills: z.array(z.object({
+    name: z.string(),
+    level: z.string().nullable(),
+    yearsOfExperience: z.number().nullable()
+  })),
+  experiences: z.array(z.object({
+    company: z.string(),
+    role: z.string(),
+    startDate: z.string().nullable(),
+    endDate: z.string().nullable(),
+    description: z.string().nullable(),
+    highlights: z.array(z.string())
+  })),
+  educations: z.array(z.object({
+    institution: z.string(),
+    degree: z.string(),
+    fieldOfStudy: z.string().nullable(),
+    startDate: z.string().nullable(),
+    endDate: z.string().nullable()
+  })),
+  projects: z.array(z.object({
+    name: z.string(),
+    description: z.string().nullable(),
+    techStack: z.array(z.string()),
+    url: z.string().nullable()
+  })),
+  certifications: z.array(z.object({
+    name: z.string(),
+    issuer: z.string().nullable(),
+    date: z.string().nullable()
+  }))
+});
+
+export class ResumeIntelligenceEngine {
+  static async parse(buffer: Buffer, mimeType: string) {
+    const adapter = new LocalExtractionAdapter();
+    const rawText = await adapter.extract(buffer, mimeType);
+    
+    if (!isAiAvailable()) {
+      throw new Error('AI Gateway is currently offline. Please configure your Ollama or API keys to parse resumes.');
+    }
+
+    const prompt = \`
+You are an expert Resume Parsing AI.
+Extract all structured data from the following raw resume text.
+
+RAW RESUME TEXT:
+"""
+\${rawText.substring(0, 20000)}
+"""
+
+Extract the candidate's basics, skills, experiences, education, projects, and certifications.
+\`;
+
+    const facts = await extractEntities(prompt, ResumeExtractionSchema, {
+      systemPrompt: 'You are an elite Resume Parsing AI. Return highly accurate JSON conforming to the schema.'
+    });
 
     return {
       parsedData: facts,
       rawText
     };
-  }
-
-  private static extractBasics(text: string) {
-    // Regex for Email
-    const emailMatch = text.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-    // Regex for Phone (basic international/US)
-    const phoneMatch = text.match(/(?:\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/);
-    
-    // Basic Name Extraction: Usually the first line with letters.
-    const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-    const nameMatch = lines.find(l => /^[A-Z][a-z]+ [A-Z][a-z]+/.test(l));
-
-    return {
-      name: nameMatch || null,
-      email: emailMatch ? emailMatch[0] : null,
-      phone: phoneMatch ? phoneMatch[0] : null,
-    };
-  }
-
-  private static extractSkills(text: string) {
-    // A primitive local dictionary for the Native Engine
-    const techDictionary = [
-      'JavaScript', 'TypeScript', 'React', 'Next.js', 'Node.js', 'Python',
-      'Java', 'C++', 'SQL', 'PostgreSQL', 'Docker', 'Kubernetes', 'AWS',
-      'GCP', 'Azure', 'Machine Learning', 'AI', 'Tailwind', 'Prisma', 'MongoDB',
-      'Redis', 'GraphQL', 'REST'
-    ];
-
-    const foundSkills = [];
-    for (const skill of techDictionary) {
-      // Case insensitive word boundary match
-      const regex = new RegExp(`\\b${skill.replace(/[.*+?^$\/{}()|[\\]\\\\]/g, '\\\\$&')}\\b`, 'i');
-      if (regex.test(text)) {
-        foundSkills.push({ name: skill, level: 'Intermediate', yearsOfExperience: 0 });
-      }
-    }
-
-    return foundSkills;
-  }
-
-  private static extractExperiences(text: string) {
-    const experiences = [];
-    const lowerText = text.toLowerCase();
-    
-    // Simplistic heuristic: Look for date ranges "2020 - Present", "Jan 2019 to Mar 2021"
-    const dateRegex = /\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{4} (?:-|to) (?:Present|Current|\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{4})\b/ig;
-    
-    let match;
-    while ((match = dateRegex.exec(text)) !== null) {
-      experiences.push({
-        company: "Extracted Company",
-        role: "Extracted Role",
-        startDate: match[0].split(' - ')[0] || null,
-        endDate: match[0].split(' - ')[1] || null,
-        description: "Experience bullet points pending native classification.",
-        highlights: []
-      });
-    }
-
-    // Limit to 5 to avoid noise
-    return experiences.slice(0, 5);
-  }
-
-  private static extractEducation(text: string) {
-    const educations = [];
-    if (text.toLowerCase().includes('bachelor') || text.toLowerCase().includes('bs') || text.toLowerCase().includes('b.s')) {
-      educations.push({
-        institution: "University",
-        degree: "Bachelor's Degree",
-        fieldOfStudy: "Computer Science (Inferred)",
-      });
-    }
-    if (text.toLowerCase().includes('master') || text.toLowerCase().includes('ms') || text.toLowerCase().includes('m.s')) {
-      educations.push({
-        institution: "University",
-        degree: "Master's Degree",
-        fieldOfStudy: "Computer Science (Inferred)",
-      });
-    }
-    return educations;
-  }
-
-  private static extractProjects(text: string) {
-    return []; // Native project extraction is complex, returning empty for baseline
   }
 }
