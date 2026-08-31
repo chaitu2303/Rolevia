@@ -17,6 +17,11 @@ export default function TypingTest() {
   const [accuracy, setAccuracy] = useState(100);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+  const finishTest = () => {
+    setIsActive(false);
+    setIsFinished(true);
+  };
+
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isActive && timeLeft > 0) {
@@ -67,11 +72,6 @@ export default function TypingTest() {
         finishTest();
       }
     }
-  };
-
-  const finishTest = () => {
-    setIsActive(false);
-    setIsFinished(true);
   };
 
   const resetTest = () => {

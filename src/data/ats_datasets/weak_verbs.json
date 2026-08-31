@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0",
+  "source": "Rolevia original — Resume writing best practices",
+  "license": "Rolevia original",
+  "importDate": "2026-08-30",
+  "weakVerbs": [
+    "helped", "assisted", "worked", "worked on", "handled", "participated",
+    "involved", "responsible for", "tasked with", "in charge of", "dealt with",
+    "tried", "attempted", "did", "made", "used", "utilized", "leveraged",
+    "supported", "contributed to", "part of", "member of", "was involved in",
+    "helped with", "assisted with", "worked with", "collaborated with",
+    "managed to", "was able to", "ensured", "monitored", "maintained",
+    "followed", "adhered to", "implemented some", "helped implement"
+  ],
+  "strongAlternatives": {
+    "helped": ["collaborated", "partnered", "co-developed", "co-designed"],
+    "assisted": ["supported", "enabled", "facilitated", "contributed to"],
+    "worked on": ["developed", "built", "engineered", "designed", "implemented"],
+    "handled": ["managed", "directed", "oversaw", "administered", "led"],
+    "participated": ["contributed", "collaborated", "engaged", "partnered"],
+    "involved": ["participated", "contributed", "executed", "delivered"],
+    "responsible for": ["owned", "managed", "directed", "spearheaded", "led"],
+    "tasked with": ["executed", "delivered", "owned", "drove"],
+    "in charge of": ["managed", "led", "directed", "oversaw"],
+    "used": ["utilized", "leveraged", "implemented", "deployed", "applied"],
+    "utilized": ["leveraged", "implemented", "deployed", "applied"],
+    "leveraged": ["applied", "implemented", "deployed", "built with"],
+    "supported": ["enabled", "accelerated", "drove", "contributed to"],
+    "maintained": ["managed", "administered", "optimized", "enhanced"],
+    "monitored": ["tracked", "analyzed", "evaluated", "assessed"],
+    "ensured": ["delivered", "achieved", "maintained", "guaranteed"],
+    "did": ["accomplished", "achieved", "delivered", "executed"],
+    "made": ["developed", "created", "built", "designed", "engineered"]
+  }
+}

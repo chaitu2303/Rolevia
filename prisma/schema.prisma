@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
 }
 
 // ============================================
@@ -22,6 +22,8 @@ model User {
   publicHandle  String?   @unique
   isPublicProfile Boolean @default(false)
   onboardingCompleted Boolean @default(false)
+  role          String    @default("USER") // USER | ADMIN | OWNER
+  isSuspended   Boolean   @default(false)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -38,6 +40,7 @@ model User {
   jobTargets     JobTarget[]
   resumes        Resume[]
   applications   Application[]
+  intelligenceReports ResumeIntelligenceReport[]
 
   // Assessments & Interviews
   assessmentAttempts AssessmentAttempt[]
@@ -58,6 +61,14 @@ model User {
   activityEvents     ActivityEvent[]
   readinessSnapshots CareerReadinessSnapshot[]
   passwordResetTokens PasswordResetToken[]
+
+  // Rolevia Premium Rebuild additions
+  personalCareerModel  PersonalCareerModel?
+  subscription         Subscription?
+  usageLedgers         UsageLedger[]
+  adminAuditLogs       AdminAuditLog[]
+  feedbacks            Feedback[]
+  bugReports           BugReport[]
 }
 
 // ============================================
@@ -304,6 +315,7 @@ model JobTarget {
   matchAnalysis    JobMatchAnalysis?
   applications     Application[]
   atsReports       AtsReport[]
+  intelligenceReports ResumeIntelligenceReport[]
 
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
@@ -346,6 +358,7 @@ model Resume {
   versions        ResumeVersion[]
   atsReports      AtsReport[]
   applications    Application[]
+  intelligenceReports ResumeIntelligenceReport[]
 
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -1380,3 +1393,209 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+// ============================================
+// RESUME INTELLIGENCE — CAREEROS NATIVE
+// ============================================
+
+enum ExtractionStatus {
+  PENDING
+  SUCCESS
+  LOW_CONFIDENCE
+  IMAGE_ONLY
+  FAILED
+}
+
+model ResumeIntelligenceReport {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Source file metadata (no sensitive data in logs)
+  fileName        String
+  fileMimeType    String
+  fileSizeBytes   Int
+  resumeHash      String?  // SHA-256 of extracted text for duplicate detection
+
+  // Linked resume (optional — analysis can be standalone)
+  resumeId        String?
+  resume          Resume?  @relation(fields: [resumeId], references: [id], onDelete: SetNull)
+
+  // Linked job target (optional)
+  jobTargetId     String?
+  jobTarget       JobTarget? @relation(fields: [jobTargetId], references: [id], onDelete: SetNull)
+
+  // Pipeline status
+  extractionStatus ExtractionStatus @default(PENDING)
+  extractionConfidence Int?          // 0–100
+
+  // Analysis inputs (stored for re-analysis)
+  targetRole      String?
+  targetCompany   String?
+  experienceLevel String?  // STUDENT | FRESHER | ENTRY | MID | SENIOR | LEAD | MANAGER | EXECUTIVE
+  country         String?
+  hasJobDescription Boolean @default(false)
+  jobDescriptionHash String? // hash only, never store JD in this table
+
+  // CareerOS Scores (0–100 each)
+  careerOsScore   Int?
+  atsScore        Int?
+  contentScore    Int?
+  impactScore     Int?
+  jobMatchScore   Int?     // null if no JD supplied
+  recruiterScore  Int?
+  consistencyScore Int?
+
+  // Detailed results (JSON — evidence-traced)
+  dimensionBreakdown Json   @default("{}")  // { dimension, score, checks[], strengths[], warnings[] }
+  parsedSections     Json   @default("{}")  // Detected sections with confidence
+  checks             Json   @default("[]")  // All individual checks with evidence
+  keywordMatches     Json   @default("[]")  // FOUND/PARTIAL/MISSING with evidence
+  jobMatchDetail     Json   @default("{}")  // Dimension-by-dimension job match
+  recruiterSignals   Json   @default("[]")  // Recruiter readiness signals
+  biasPrivacyFlags   Json   @default("[]")  // Privacy/bias warnings
+  actionPlan         Json   @default("[]")  // P0/P1/P2/P3 prioritized fixes
+
+  // Version metadata
+  reportVersion   String   @default("INTELLIGENCE_V1")
+  label           String?  // User-assigned label e.g. "Google Application"
+  status          String   @default("ACTIVE") // ACTIVE | ARCHIVED
+
+  bulletAnalyses  BulletAnalysisRecord[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+  @@index([resumeId])
+}
+
+model BulletAnalysisRecord {
+  id              String   @id @default(uuid())
+  reportId        String
+  report          ResumeIntelligenceReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  sectionType     String   // experience | projects | education | summary
+  bulletIndex     Int      // 0-based index within section
+  originalText    String   @db.Text
+
+  // Scores (0–100)
+  impactScore         Int
+  clarityScore        Int
+  specificityScore    Int
+  actionStrength      Int
+  quantificationScore Int
+  overallScore        Int
+
+  issues          Json     @default("[]")  // { type, description, evidence }
+  suggestions     Json     @default("[]")  // Non-fabricating improvement suggestions
+  hasQuantification Boolean @default(false)
+  weakVerb        String?
+  suggestedVerb   String?
+
+  createdAt       DateTime @default(now())
+
+  @@index([reportId])
+}
+
+// ============================================
+// ROLEVIA SYSTEM — PREMIUM REBUILD MODELS
+// ============================================
+
+model PersonalCareerModel {
+  id                    String   @id @default(uuid())
+  userId                String   @unique
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  careerIdentity        String?  @db.Text
+  skills                Json?    // Array of skills with confidence (Verified, Strong, etc.)
+  experienceLevel       String?  // STUDENT | FRESHER | ENTRY | MID | SENIOR | LEAD | MANAGER | EXECUTIVE
+  careerGoals           String?  @db.Text
+  targetRoles           Json?    // string[]
+  targetCompanies       Json?    // string[]
+  targetLocations       Json?    // string[]
+  preferredIndustries   Json?    // string[]
+  strengths             Json?    // string[]
+  weaknesses            Json?    // string[]
+  learningProgress      Json?    // Roadmap tasks
+  preferences           Json?    // Preferred work arrangements
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model Subscription {
+  id        String    @id @default(uuid())
+  userId    String    @unique
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan      String    @default("FREE") // FREE | LAUNCH | CAREER | PRO
+  status    String    @default("ACTIVE") // ACTIVE | CANCELLED | EXPIRED
+  source    String    @default("USER_PURCHASE") // USER_PURCHASE | OWNER_GRANT | ADMIN_GRANT
+  isActive  Boolean   @default(true)
+  startDate DateTime  @default(now())
+  endDate   DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model UsageLedger {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  feature         String   // RESUME_SCAN | JOB_MATCH | TAILOR | INTERVIEW | EXPORT | ATS_SCAN
+  actionType      String   @default("FEATURE_USAGE")
+  creditsConsumed Int      @default(1)
+  plan            String?  @default("FREE")
+  result          String?  @default("SUCCESS")
+  timestamp       DateTime @default(now())
+  metadata        Json?
+
+  @@index([userId])
+}
+
+model AdminAuditLog {
+  id          String   @id @default(uuid())
+  adminUserId String
+  adminUser   User     @relation(fields: [adminUserId], references: [id], onDelete: Cascade)
+  action      String   // PLAN_GRANTED | PLAN_REVOKED | USER_SUSPENDED | ADMIN_CREATED | ADMIN_REMOVED | CONFIG_UPDATED
+  target      String
+  result      String   @default("SUCCESS")
+  metadata    Json?
+  timestamp   DateTime @default(now())
+
+  @@index([adminUserId])
+}
+
+model Feedback {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  feature   String
+  rating    String   // THUMBS_UP | THUMBS_DOWN
+  comment   String?  @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model BugReport {
+  id            String   @id @default(uuid())
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  feature       String
+  description   String   @db.Text
+  severity      String   @default("MEDIUM") // LOW | MEDIUM | HIGH | CRITICAL
+  status        String   @default("OPEN") // OPEN | IN_PROGRESS | RESOLVED | CLOSED
+  screenshotUrl String?
+  createdAt     DateTime @default(now())
+
+  @@index([userId])
+}
+
+model FeatureFlag {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  enabled     Boolean  @default(false)
+  description String?
+  updatedAt   DateTime @updatedAt
+}
+

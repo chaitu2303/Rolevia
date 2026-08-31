@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, UserCircle, Briefcase, GraduationCap, Code2, AlertTriangle, CheckCircle, Save } from 'lucide-react';
+import { Loader2, UserCircle, Briefcase, GraduationCap, Code2, AlertTriangle, CheckCircle, Save, Fingerprint } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import { motion } from 'framer-motion';
 
 export default function MasterProfilePage() {
   const [profile, setProfile] = useState<any>(null);
@@ -44,146 +45,163 @@ export default function MasterProfilePage() {
 
   if (loading) {
     return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-black" />
+      <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-8 bg-[#faf8f5] text-black font-sans min-h-screen">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 border-b-8 border-black pb-8 shrink-0">
-        <div className="flex items-center gap-6">
-          <div className="w-16 h-16 bg-[#ffe500] border-4 border-black flex items-center justify-center shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] -rotate-2">
-            <UserCircle className="w-8 h-8 text-black" />
+    <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-8 bg-background min-h-[calc(100vh-4rem)]">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-border pb-6">
+        <div className="flex items-center gap-5">
+          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20">
+            <Fingerprint className="w-8 h-8 text-primary" />
           </div>
-          <div>
-            <h1 className="text-4xl md:text-5xl font-black tracking-tighter uppercase">Master Profile</h1>
-            <p className="font-bold text-lg mt-1 bg-[#ff90e8] text-black inline-block px-2 border-2 border-black rotate-1">Your central career identity.</p>
+          <div className="space-y-1">
+            <h1 className="text-3xl font-black text-foreground">Master Profile</h1>
+            <p className="text-sm text-muted-foreground">Your centralized career identity and verified facts.</p>
           </div>
         </div>
         <Button 
           onClick={handleSave}
           disabled={saving}
-          className="h-14 px-8 rounded-none border-4 border-black bg-[#90c0ff] hover:bg-[#70aaff] text-black font-black uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:translate-x-1 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all"
+          className="h-10 px-6 font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-all rounded-lg"
         >
-          {saving ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Save className="w-5 h-5 mr-2" />}
+          {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
           Save Changes
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Left Column: Basics & Status */}
-        <div className="lg:col-span-4 space-y-8">
-          <Card className="rounded-none border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] bg-white">
-            <CardHeader className="border-b-4 border-black bg-[#ff90e8]">
-              <CardTitle className="font-black uppercase flex items-center gap-2">
-                <CheckCircle className="w-5 h-5" /> Profile Status
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-6 space-y-4 font-bold">
-              <div className="flex justify-between items-center">
-                <span>Completeness</span>
-                <span className="text-xl font-black">85%</span>
-              </div>
-              <div className="w-full bg-[#faf8f5] border-2 border-black h-4 relative">
-                <div className="bg-[#23a094] h-full w-[85%] border-r-2 border-black"></div>
-              </div>
-              <p className="text-sm text-muted-foreground pt-2">Add 1 more project to reach 100%.</p>
-            </CardContent>
-          </Card>
-
-          <Card className="rounded-none border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] bg-white">
-            <CardHeader className="border-b-4 border-black bg-[#ffe500]">
-              <CardTitle className="font-black uppercase flex items-center gap-2">
-                <UserCircle className="w-5 h-5" /> Basics
+        <div className="lg:col-span-4 space-y-6">
+          <Card className="rounded-2xl border border-border shadow-sm bg-card overflow-hidden">
+            <CardHeader className="border-b border-border bg-muted/30 pb-4">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground">
+                <CheckCircle className="w-4 h-4 text-success" /> Profile Status
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-6 space-y-4">
-              <div>
-                <label className="text-xs font-black uppercase tracking-wider text-muted-foreground mb-1 block">Full Name</label>
-                <div className="font-bold text-lg p-2 bg-[#faf8f5] border-2 border-black">{profile.basics?.name || 'Not set'}</div>
+              <div className="flex justify-between items-end">
+                <span className="text-sm font-medium text-muted-foreground">Completeness</span>
+                <span className="text-2xl font-black text-foreground">85%</span>
               </div>
-              <div>
-                <label className="text-xs font-black uppercase tracking-wider text-muted-foreground mb-1 block">Email</label>
-                <div className="font-bold text-lg p-2 bg-[#faf8f5] border-2 border-black">{profile.basics?.email || 'Not set'}</div>
+              <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
+                <motion.div 
+                  initial={{ width: 0 }} 
+                  animate={{ width: '85%' }} 
+                  className="bg-success h-full transition-all duration-1000 ease-out" 
+                />
               </div>
-              <div>
-                <label className="text-xs font-black uppercase tracking-wider text-muted-foreground mb-1 block">Location</label>
-                <div className="font-bold text-lg p-2 bg-[#faf8f5] border-2 border-black">{profile.basics?.location || 'Not set'}</div>
+              <p className="text-xs text-muted-foreground pt-1 flex items-center gap-1.5">
+                <AlertTriangle className="w-3.5 h-3.5 text-warning-foreground" /> Add 1 more project to reach 100%.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="rounded-2xl border border-border shadow-sm bg-card overflow-hidden">
+            <CardHeader className="border-b border-border bg-muted/30 pb-4">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground">
+                <UserCircle className="w-4 h-4 text-primary" /> Basics
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6 space-y-5">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">Full Name</label>
+                <div className="text-sm font-medium text-foreground p-3 bg-muted/50 rounded-xl border border-border">{profile.basics?.name || 'Not set'}</div>
               </div>
-              <div>
-                <label className="text-xs font-black uppercase tracking-wider text-muted-foreground mb-1 block">Professional Summary</label>
-                <div className="font-bold p-3 bg-[#faf8f5] border-2 border-black min-h-[100px]">{profile.basics?.summary || 'Not set'}</div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">Email</label>
+                <div className="text-sm font-medium text-foreground p-3 bg-muted/50 rounded-xl border border-border">{profile.basics?.email || 'Not set'}</div>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">Location</label>
+                <div className="text-sm font-medium text-foreground p-3 bg-muted/50 rounded-xl border border-border">{profile.basics?.location || 'Not set'}</div>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">Professional Summary</label>
+                <div className="text-sm text-foreground p-3 bg-muted/50 rounded-xl border border-border min-h-[100px] leading-relaxed">{profile.basics?.summary || 'Not set'}</div>
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Right Column: Details */}
-        <div className="lg:col-span-8 space-y-8">
+        <div className="lg:col-span-8 space-y-6">
           
-          <Card className="rounded-none border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] bg-white">
-            <CardHeader className="border-b-4 border-black bg-[#90c0ff]">
-              <CardTitle className="font-black uppercase flex items-center gap-2">
-                <Briefcase className="w-5 h-5" /> Experience
+          <Card className="rounded-2xl border border-border shadow-sm bg-card overflow-hidden">
+            <CardHeader className="border-b border-border bg-muted/30 pb-4">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground">
+                <Briefcase className="w-4 h-4 text-primary" /> Experience
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-6 space-y-4">
               {profile.experiences?.length > 0 ? (
                 profile.experiences.map((exp: any, i: number) => (
-                  <div key={i} className="p-4 border-4 border-black bg-[#faf8f5] relative -rotate-1 hover:rotate-0 transition-transform">
-                    <div className="font-black text-xl">{exp.role}</div>
-                    <div className="font-bold text-[#ff4040]">{exp.company}</div>
-                    <div className="text-sm font-bold opacity-70 mt-2">{exp.duration}</div>
+                  <div key={i} className="p-5 rounded-xl border border-border bg-card hover:bg-muted/30 transition-colors group">
+                    <div className="flex justify-between items-start gap-4">
+                      <div>
+                        <div className="font-semibold text-foreground text-lg group-hover:text-primary transition-colors">{exp.role}</div>
+                        <div className="text-sm font-medium text-muted-foreground mt-0.5">{exp.company}</div>
+                      </div>
+                      <div className="text-xs font-medium bg-muted px-2.5 py-1 rounded-md text-muted-foreground whitespace-nowrap">{exp.duration}</div>
+                    </div>
                   </div>
                 ))
               ) : (
-                <div className="p-8 text-center font-bold text-muted-foreground border-4 border-dashed border-black/20">No experiences added yet.</div>
+                <div className="py-12 text-center border-2 border-dashed border-border rounded-xl bg-muted/10">
+                  <Briefcase className="w-8 h-8 mx-auto text-muted-foreground/50 mb-3" />
+                  <p className="text-sm font-medium text-muted-foreground">No experiences added yet.</p>
+                </div>
               )}
             </CardContent>
           </Card>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Card className="rounded-none border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] bg-white">
-              <CardHeader className="border-b-4 border-black bg-[#23a094] text-white">
-                <CardTitle className="font-black uppercase flex items-center gap-2">
-                  <GraduationCap className="w-5 h-5" /> Education
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="rounded-2xl border border-border shadow-sm bg-card overflow-hidden">
+              <CardHeader className="border-b border-border bg-muted/30 pb-4">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground">
+                  <GraduationCap className="w-4 h-4 text-primary" /> Education
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-6 space-y-4">
                 {profile.educations?.length > 0 ? (
                   profile.educations.map((edu: any, i: number) => (
-                    <div key={i} className="p-4 border-4 border-black bg-[#faf8f5]">
-                      <div className="font-black text-lg">{edu.degree}</div>
-                      <div className="font-bold text-muted-foreground">{edu.institution}</div>
-                      <div className="text-sm font-bold opacity-70 mt-1">{edu.year}</div>
+                    <div key={i} className="p-4 rounded-xl border border-border bg-card hover:bg-muted/30 transition-colors">
+                      <div className="font-semibold text-foreground">{edu.degree}</div>
+                      <div className="text-sm text-muted-foreground mt-0.5">{edu.institution}</div>
+                      <div className="text-xs font-medium text-muted-foreground/70 mt-2">{edu.year}</div>
                     </div>
                   ))
                 ) : (
-                  <div className="p-4 text-center font-bold text-muted-foreground border-4 border-dashed border-black/20">No education added.</div>
+                  <div className="py-8 text-center border-2 border-dashed border-border rounded-xl bg-muted/10">
+                    <p className="text-sm font-medium text-muted-foreground">No education added.</p>
+                  </div>
                 )}
               </CardContent>
             </Card>
 
-            <Card className="rounded-none border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] bg-white">
-              <CardHeader className="border-b-4 border-black bg-[#ff4040] text-white">
-                <CardTitle className="font-black uppercase flex items-center gap-2">
-                  <Code2 className="w-5 h-5" /> Skills
+            <Card className="rounded-2xl border border-border shadow-sm bg-card overflow-hidden">
+              <CardHeader className="border-b border-border bg-muted/30 pb-4">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground">
+                  <Code2 className="w-4 h-4 text-primary" /> Skills
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-6">
                 {profile.skills?.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
                     {profile.skills.map((skill: any, i: number) => (
-                      <span key={i} className="px-3 py-1 bg-white border-2 border-black font-black uppercase text-sm shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                      <span key={i} className="px-3 py-1.5 bg-primary/10 text-primary border border-primary/20 rounded-lg text-xs font-medium">
                         {skill.name}
                       </span>
                     ))}
                   </div>
                 ) : (
-                  <div className="p-4 text-center font-bold text-muted-foreground border-4 border-dashed border-black/20">No skills added.</div>
+                  <div className="py-8 text-center border-2 border-dashed border-border rounded-xl bg-muted/10">
+                    <p className="text-sm font-medium text-muted-foreground">No skills added.</p>
+                  </div>
                 )}
               </CardContent>
             </Card>

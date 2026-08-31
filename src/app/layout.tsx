@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Placement2Job — Complete Placement to Job OS",
-  description: "AI-powered placement preparation, resume alteration, auto application filler, mock interviews, and skill learning platform",
+  title: "ROLEVIA — Build Better. Apply Smarter. Get Hired.",
+  description: "Build the resume. Prove the skills. Practice the interview. Apply with confidence.",
   icons: {
     icon: "/icon.svg",
     shortcut: "/icon.svg",
@@ -38,11 +38,11 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-[#faf8f5] overflow-x-hidden">
+      <body className="min-h-full flex flex-col bg-background text-foreground overflow-x-hidden">
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
-          enableSystem={false}
+          defaultTheme="system"
+          enableSystem={true}
           disableTransitionOnChange
         >
           <SessionProvider>

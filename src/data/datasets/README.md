@@ -1,6 +1,6 @@
-# CareerOS Master Datasets Repository
+# Rolevia Master Datasets Repository
 
-This directory contains the core intelligence of CareerOS. By loading Kaggle, HuggingFace, ESCO, and O*NET datasets into these JSON files, the platform operates completely independently of external AI APIs.
+This directory contains the core intelligence of Rolevia. By loading Kaggle, HuggingFace, ESCO, and O*NET datasets into these JSON files, the platform operates completely independently of external AI APIs.
 
 ## Directory Structure
 - `/ats` - Keyword lists, scoring weights, and parsing rules.

@@ -85,15 +85,24 @@ export class InProcessJSExecutionProvider implements ICodeExecutionProvider {
           console: { log: () => {} } // silent console
         };
 
-        // User code format: function solve(input) { return ... }; __OUTPUT__ = solve.apply(null, Array.isArray(__INPUT__) ? __INPUT__ : [__INPUT__]);
-        // To be safe and simple, let's just append the execution part to the user code if they provide it.
+        // Resolve function name using Regex to bypass ES6 const/let lexical block scopes inside VM
+        const fnMatch = options.code.match(/function\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/) || 
+                        options.code.match(/(?:const|let|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=\s*(?:function|\([^)]*\)\s*=>)/);
+        const resolvedFnName = fnMatch ? fnMatch[1] : '';
+
         const fullCode = `
           ${options.code}
-          // Try to find the first defined function and call it with inputs
-          const fnName = Object.keys(this).find(k => typeof this[k] === 'function');
-          if (fnName) {
-             const inputArgs = Array.isArray(__INPUT__) ? __INPUT__ : [__INPUT__];
-             __OUTPUT__ = this[fnName](...inputArgs);
+          // Try to execute resolved function or fallback to searching this keys
+          const resolvedName = "${resolvedFnName}";
+          if (resolvedName && typeof eval(resolvedName) === 'function') {
+            const inputArgs = Array.isArray(__INPUT__) ? __INPUT__ : [__INPUT__];
+            __OUTPUT__ = eval(resolvedName)(...inputArgs);
+          } else {
+            const fnName = Object.keys(this).find(k => typeof this[k] === 'function');
+            if (fnName) {
+               const inputArgs = Array.isArray(__INPUT__) ? __INPUT__ : [__INPUT__];
+               __OUTPUT__ = this[fnName](...inputArgs);
+            }
           }
         `;
 

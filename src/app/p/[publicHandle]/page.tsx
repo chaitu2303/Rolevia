@@ -50,7 +50,7 @@ export default async function CareerPassportPage({ params }: { params: Promise<{
         <div className="flex flex-col items-end">
           <div className="flex items-center gap-2 text-green-700 bg-green-50 border border-green-200 px-4 py-2 rounded-full shadow-sm">
             <ShieldCheck className="w-5 h-5" />
-            <span className="font-semibold text-sm">CareerOS Verified</span>
+            <span className="font-semibold text-sm">Rolevia Verified</span>
           </div>
         </div>
       </div>

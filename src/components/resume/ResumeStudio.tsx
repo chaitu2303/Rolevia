@@ -227,9 +227,9 @@ export function ResumeStudio({ resume, versions, jobTargets }: ResumeStudioProps
   return (
     <div className="flex flex-col h-[calc(100vh-3.5rem)] bg-[#faf8f5] text-black relative">
       {/* Topbar */}
-      <header className="h-16 border-b-4 border-black bg-white flex items-center justify-between px-6 shrink-0 gap-4 no-print shadow-[0px_4px_0px_0px_rgba(0,0,0,1)] z-20">
+      <header className="h-16 border-b border-border bg-card/80 backdrop-blur-md flex items-center justify-between px-6 shrink-0 gap-4 no-print shadow-sm z-20">
         <div className="flex items-center gap-4 min-w-0">
-          <Link href="/dashboard/resumes" className="p-2 border-2 border-black hover:bg-[#ffe500] hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
+          <Link href="/dashboard/resumes" className="p-2 border border-border rounded-lg hover:bg-muted transition-colors">
             <ChevronLeft className="w-5 h-5" />
           </Link>
           <input
@@ -249,7 +249,7 @@ export function ResumeStudio({ resume, versions, jobTargets }: ResumeStudioProps
 
         <div className="flex items-center gap-2">
           {/* View mode toggle */}
-          <div className="hidden md:flex items-center border-4 border-black bg-white p-1 gap-1 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+          <div className="hidden md:flex items-center bg-muted/50 p-1 gap-1 rounded-lg border border-border">
             {([
               { mode: 'desktop', icon: Monitor },
               { mode: 'mobile', icon: Smartphone },
@@ -257,57 +257,59 @@ export function ResumeStudio({ resume, versions, jobTargets }: ResumeStudioProps
               <button
                 key={vm}
                 onClick={() => setViewMode(vm)}
-                className={`p-2 transition-all ${viewMode === vm ? 'bg-black text-white' : 'hover:bg-gray-200 text-black'}`}
+                className={`p-1.5 rounded-md transition-colors ${viewMode === vm ? 'bg-background shadow-sm text-foreground' : 'hover:bg-muted text-muted-foreground'}`}
               >
                 <Icon className="w-4 h-4" />
               </button>
             ))}
           </div>
 
-          <button
+          <Button
             onClick={runAtsAnalysis}
             disabled={atsLoading}
-            className="flex items-center gap-2 h-10 px-4 border-4 border-black bg-[#90c0ff] hover:bg-[#70aaff] text-black font-black uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all disabled:opacity-50"
+            variant="default"
+            className="flex items-center gap-2 h-9 px-4 rounded-lg font-medium"
           >
             {atsLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileSearch className="w-4 h-4" />}
             ATS Score
-          </button>
+          </Button>
 
-          <button
+          <Button
             onClick={() => saveVersion('Manual save')}
-            className="flex items-center gap-2 h-10 px-4 border-4 border-black bg-white hover:bg-slate-100 text-black font-black uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
+            variant="outline"
+            className="flex items-center gap-2 h-9 px-4 rounded-lg font-medium"
           >
             <History className="w-4 h-4" /> Save Version
-          </button>
+          </Button>
 
-          <button
+          <Button
             onClick={exportPdf}
-            className="flex items-center gap-2 h-10 px-4 border-4 border-black bg-[#abf5d1] hover:bg-[#8ee5c0] text-black font-black uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all"
+            variant="secondary"
+            className="flex items-center gap-2 h-9 px-4 rounded-lg font-medium"
           >
             <FileDown className="w-4 h-4" /> Export PDF
-          </button>
+          </Button>
         </div>
       </header>
 
       {/* Main Studio Layout */}
       <div className="flex flex-1 min-h-0 relative z-10">
 
-        {/* LEFT PANEL — Sections & Controls */}
-        <aside className="w-80 border-r-4 border-black bg-white flex flex-col shrink-0 overflow-hidden no-print hidden md:flex">
+        <aside className="w-80 border-r border-border bg-card flex flex-col shrink-0 overflow-hidden no-print hidden md:flex z-10 premium-shadow">
           {/* Panel Tabs */}
-          <div className="flex border-b-4 border-black shrink-0">
+          <div className="flex border-b border-border shrink-0 bg-muted/20">
             {([
-              { key: 'sections', label: 'Sections', color: 'bg-[#90c0ff]' },
-              { key: 'ai', label: 'AI', color: 'bg-[#ff90e8]' },
-              { key: 'versions', label: 'History', color: 'bg-[#ffe500]' },
+              { key: 'sections', label: 'Sections' },
+              { key: 'ai', label: 'AI' },
+              { key: 'versions', label: 'History' },
             ] as const).map(tab => (
               <button
                 key={tab.key}
                 onClick={() => setActivePanel(tab.key)}
-                className={`flex-1 py-3 text-sm font-black uppercase transition-all ${
+                className={`flex-1 py-3 text-sm font-bold uppercase tracking-wider transition-all border-b-2 ${
                   activePanel === tab.key
-                    ? `border-b-4 border-black ${tab.color} translate-y-1`
-                    : 'text-black hover:bg-slate-100'
+                    ? `border-primary text-primary`
+                    : 'border-transparent text-muted-foreground hover:bg-muted/50 hover:text-foreground'
                 }`}
               >
                 {tab.label}
@@ -414,30 +416,31 @@ function VersionHistory({
   }
 
   return (
-    <div className="p-6 space-y-4 font-bold">
-      <p className="text-xs uppercase tracking-widest bg-black text-white px-2 py-1 inline-block">Click a version to restore.</p>
+    <div className="p-6 space-y-4">
+      <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold">Click a version to restore.</p>
       {versions.length === 0 && (
-        <p className="text-sm uppercase text-center py-6">No saved versions yet.</p>
+        <p className="text-sm text-center py-6 text-muted-foreground">No saved versions yet.</p>
       )}
       {versions.map(v => (
-        <div key={v.id} className="border-4 border-black bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-4 space-y-2 hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all">
+        <div key={v.id} className="bg-card border border-border shadow-sm rounded-xl p-4 space-y-3 hover:shadow-md transition-all group">
           <div className="flex items-center justify-between">
-            <span className="text-xl font-black uppercase">v{v.versionNumber}</span>
-            <span className="text-xs uppercase tracking-widest bg-black text-white px-2">
+            <span className="text-lg font-bold text-foreground">v{v.versionNumber}</span>
+            <span className="text-xs uppercase tracking-widest text-muted-foreground bg-muted px-2 py-1 rounded-md">
               {new Date(v.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
             </span>
           </div>
-          {v.title && <div className="text-sm font-bold opacity-80">{v.title}</div>}
+          {v.title && <div className="text-sm text-muted-foreground">{v.title}</div>}
           {v.tailoredForJob && (
-            <div className="text-xs font-black uppercase bg-[#90c0ff] border-2 border-black px-2 py-1 inline-block">🎯 Tailored</div>
+            <div className="text-xs font-bold uppercase text-primary bg-primary/10 px-2 py-1 rounded-md inline-block">🎯 Tailored</div>
           )}
-          <button
+          <Button
             onClick={() => restore(v.id)}
             disabled={loading === v.id}
-            className="mt-4 w-full text-sm font-black uppercase py-2 border-4 border-black bg-[#ffe500] hover:bg-black hover:text-[#ffe500] transition-colors disabled:opacity-50"
+            variant="outline"
+            className="w-full mt-2"
           >
-            {loading === v.id ? 'Restoring...' : 'Restore'}
-          </button>
+            {loading === v.id ? 'Restoring...' : 'Restore Version'}
+          </Button>
         </div>
       ))}
     </div>

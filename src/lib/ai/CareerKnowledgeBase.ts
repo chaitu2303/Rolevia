@@ -1,7 +1,7 @@
 // Career Knowledge Base — rich, structured career advice
 // Used to augment the AI model with domain-specific context
 
-export const CAREER_SYSTEM_PROMPT = `You are CareerBot, an expert career coach and job placement advisor.
+export const CAREER_SYSTEM_PROMPT = `You are Rolevia Copilot, an expert career coach and job placement advisor.
 You help people with: resume writing, interview preparation, ATS optimization, job searching, salary negotiation, career transitions, LinkedIn profiles, cover letters, and career planning.
 You give specific, actionable, and honest advice. Keep answers concise (3-5 sentences max).
 Never give generic advice — always be specific and practical.`;
@@ -77,7 +77,7 @@ export function buildPrompt(userMessage: string, history: { role: string; conten
     }
   });
 
-  const historyContext = history.slice(-4).map(m => `${m.role === 'user' ? 'User' : 'CareerBot'}: ${m.content}`).join('\n');
+  const historyContext = history.slice(-4).map(m => `${m.role === 'user' ? 'User' : 'Rolevia Copilot'}: ${m.content}`).join('\n');
 
   return `${CAREER_SYSTEM_PROMPT}
 
@@ -86,14 +86,14 @@ ${contextLines.length > 0 ? 'Relevant Context:\n' + contextLines.join('\n') : ''
 ${historyContext ? 'Conversation History:\n' + historyContext : ''}
 
 User: ${userMessage}
-CareerBot:`;
+Rolevia Copilot:`;
 }
 
 // Smart keyword-based instant responses for common questions
 export const QUICK_RESPONSES: { pattern: RegExp; response: string }[] = [
   {
     pattern: /hello|hi|hey|start|begin/i,
-    response: `Hi! I'm CareerBot — your free, private AI career coach running entirely on your device. No data sent to any server. Ever. Ask me anything: resume tips, interview prep, salary negotiation, ATS optimization, or job search strategy. What can I help you with today?`
+    response: `Hi! I'm Rolevia Copilot — your free, private AI career coach running entirely on your device. No data sent to any server. Ever. Ask me anything: resume tips, interview prep, salary negotiation, ATS optimization, or job search strategy. What can I help you with today?`
   },
   {
     pattern: /what can you do|help|capabilities/i,

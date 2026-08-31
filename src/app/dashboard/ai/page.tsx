@@ -21,7 +21,7 @@ export default function AIControlCenter() {
             <h1 className="text-3xl font-bold tracking-tight">AI Control Center</h1>
           </div>
           <p className="text-muted-foreground text-balance">
-            Manage your self-hosted CareerOS AI Engine, privacy guard, and local inference capabilities.
+            Manage your self-hosted Rolevia AI Engine, privacy guard, and local inference capabilities.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -152,7 +152,7 @@ export default function AIControlCenter() {
             
             <div className="mt-8 pt-6 border-t border-border/50">
               <p className="text-xs text-muted-foreground mb-4">
-                CareerOS Native AI Engine is running in <span className="font-bold text-foreground">isolated mode</span>. 
+                Rolevia Native AI Engine is running in <span className="font-bold text-foreground">isolated mode</span>. 
                 All features are fully operational without requiring cloud API subscriptions.
               </p>
               <Link href="/dashboard">

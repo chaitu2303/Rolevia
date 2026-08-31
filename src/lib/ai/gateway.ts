@@ -1,5 +1,5 @@
 /**
- * CareerOS AI Gateway
+ * Rolevia AI Gateway
  * Provider-independent AI routing with graceful fallbacks.
  * Never call AI providers directly — always use this gateway.
  */

@@ -142,8 +142,81 @@ export function SectionsPanel({ content, onChange }: SectionsPanelProps) {
               className="w-full mt-1 px-2 py-1.5 text-xs rounded-lg border bg-background"
             >
               <option value="clean">Clean (ATS Safe)</option>
-              <option value="modern">Modern</option>
-              <option value="minimal">Minimal</option>
+              <option value="modern">Modern Split</option>
+              <option value="minimal">Elegant Minimal</option>
+              <option value="technical">Technical Monospace</option>
+              <option value="student">Student / Graduate</option>
+              <option value="professional">Professional Chronological</option>
+              <option value="experienced">Experienced Professional</option>
+              <option value="executive">Executive Serif</option>
+              <option value="academic">Academic CV</option>
+            </select>
+          </div>
+
+          {/* Typography Font */}
+          <div>
+            <label className="text-xs text-muted-foreground">Font Family</label>
+            <select
+              value={content.font ?? 'Inter, sans-serif'}
+              onChange={e => updateDesign('font', e.target.value)}
+              className="w-full mt-1 px-2 py-1.5 text-xs rounded-lg border bg-background"
+            >
+              <option value="Inter, sans-serif">Inter (Modern Sans)</option>
+              <option value="Garamond, serif">Garamond (Classy Serif)</option>
+              <option value="Roboto, sans-serif">Roboto (Clean Sans)</option>
+              <option value="Georgia, serif">Georgia (Traditional Serif)</option>
+            </select>
+          </div>
+
+          {/* Margins Preset */}
+          <div>
+            <label className="text-xs text-muted-foreground">Margins Preset</label>
+            <select
+              value={content.marginsPreset ?? 'standard'}
+              onChange={e => {
+                const val = e.target.value;
+                let top = 20, bottom = 20, left = 20, right = 20;
+                if (val === 'narrow') { top = 10; bottom = 10; left = 10; right = 10; }
+                if (val === 'wide') { top = 30; bottom = 30; left = 30; right = 30; }
+                onChange({
+                  ...content,
+                  marginsPreset: val,
+                  margins: { top, bottom, left, right }
+                });
+              }}
+              className="w-full mt-1 px-2 py-1.5 text-xs rounded-lg border bg-background"
+            >
+              <option value="narrow">Narrow (10mm)</option>
+              <option value="standard">Standard (20mm)</option>
+              <option value="wide">Wide (30mm)</option>
+            </select>
+          </div>
+
+          {/* Page Size */}
+          <div>
+            <label className="text-xs text-muted-foreground">Page Format</label>
+            <select
+              value={content.pageSize ?? 'a4'}
+              onChange={e => updateDesign('pageSize', e.target.value)}
+              className="w-full mt-1 px-2 py-1.5 text-xs rounded-lg border bg-background"
+            >
+              <option value="a4">A4 Standard (210mm x 297mm)</option>
+              <option value="letter">US Letter (8.5" x 11")</option>
+            </select>
+          </div>
+
+          {/* Accent Color */}
+          <div>
+            <label className="text-xs text-muted-foreground">Accent Color</label>
+            <select
+              value={content.accentColor ?? 'default'}
+              onChange={e => updateDesign('accentColor', e.target.value)}
+              className="w-full mt-1 px-2 py-1.5 text-xs rounded-lg border bg-background"
+            >
+              <option value="default">Default Charcoal</option>
+              <option value="emerald">Emerald Green</option>
+              <option value="indigo">Indigo Blue</option>
+              <option value="amber">Amber Gold</option>
             </select>
           </div>
         </div>

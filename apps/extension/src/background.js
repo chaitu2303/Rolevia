@@ -1,8 +1,8 @@
-// Background Script for CareerOS Extension
+// Background Script for Rolevia Extension
 const API_BASE_URL = 'https://careeros-iota.vercel.app';
 
 chrome.runtime.onInstalled.addListener(() => {
-  console.log("CareerOS Extension Installed");
+  console.log("Rolevia Extension Installed");
 });
 
 // Secure API Gateway

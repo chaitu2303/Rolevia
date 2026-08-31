@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { isAiAvailable, extractEntities } from '@/lib/ai/gateway';
 import { z } from 'zod';
+import { InterviewQuestionEngine } from '@/lib/intelligence/InterviewQuestionEngine';
 
 export interface AgentDecision {
   nextAction: 'ASK_NEW' | 'FOLLOW_UP' | 'CHALLENGE' | 'TRANSITION' | 'END_INTERVIEW';
@@ -57,12 +58,77 @@ export class InterviewOrchestrator {
     if (session && session.userId !== userId) throw new Error('Unauthorized');
     if (!session) throw new Error('Session not found');
 
-    if (!isAiAvailable()) {
-      throw new Error('AI_UNAVAILABLE');
+    const log = Array.isArray(session.conversationLog) ? (session.conversationLog as any[]) : [];
+
+    const aiAvailable = await isAiAvailable();
+    if (!aiAvailable) {
+      const profile = await prisma.personalCareerModel.findUnique({ where: { userId } });
+      const allQuestions = InterviewQuestionEngine.generateQuestions(
+        profile ? { skills: ((profile.skills || []) as any[]) } as any : null,
+        session.targetRole || 'Software Engineer',
+        session.difficulty || 'MID'
+      );
+
+      const assistantLogs = log.filter(l => l.role === 'assistant');
+      const questionIndex = assistantLogs.length;
+
+      let nextQuestion = allQuestions[questionIndex];
+      let action: 'ASK_NEW' | 'END_INTERVIEW' = 'ASK_NEW';
+      let reply = '';
+      
+      let score = 80;
+      let feedback = 'Your answer is structured and clear. Keep adding direct context details to prove your technical depth.';
+
+      if (questionIndex > 0 && candidateAnswer) {
+        const lastQuestionObj = allQuestions[questionIndex - 1];
+        if (lastQuestionObj) {
+          const keywords = lastQuestionObj.expectedKeywords || [];
+          const lowerAns = candidateAnswer.toLowerCase();
+          const matched = keywords.filter(k => lowerAns.includes(k.toLowerCase()));
+          score = Math.round(50 + (matched.length / Math.max(1, keywords.length)) * 45);
+          
+          const missing = keywords.filter(k => !matched.includes(k));
+          if (missing.length > 0) {
+            feedback = `Good description. To improve, try integrating references to: ${missing.join(', ')} to show complete expertise.`;
+          } else {
+            feedback = `Excellent coverage of key concepts! You successfully addressed all core elements: ${keywords.join(', ')}.`;
+          }
+        }
+      }
+
+      if (questionIndex >= allQuestions.length) {
+        action = 'END_INTERVIEW';
+        reply = 'Thank you for completing this mock interview simulation! We have compiled your scores and feedback. Check your evaluation dashboard for details.';
+      } else {
+        reply = nextQuestion.text;
+      }
+
+      const updatedLog = [
+        ...log,
+        { role: 'user', content: candidateAnswer, timestamp: new Date().toISOString() },
+        { role: 'assistant', content: reply, timestamp: new Date().toISOString(), score, feedback }
+      ];
+
+      const status = action === 'END_INTERVIEW' ? 'COMPLETED' : session.status;
+
+      await prisma.interviewSession.update({
+        where: { id: sessionId },
+        data: {
+          conversationLog: updatedLog,
+          status,
+          ...(status === 'COMPLETED' ? { completedAt: new Date() } : {})
+        }
+      });
+
+      return {
+        reply,
+        action,
+        isNativeIntelligence: true,
+        score,
+        feedback
+      };
     }
 
-    const log = Array.isArray(session.conversationLog) ? (session.conversationLog as any[]) : [];
-    
     const prompt = `
 You are an expert ${session.type} interviewer conducting an interview for a ${session.targetRole} (${session.difficulty} level).
 Candidate's Latest Answer: "${candidateAnswer}".

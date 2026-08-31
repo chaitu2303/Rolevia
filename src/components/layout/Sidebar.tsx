@@ -9,52 +9,67 @@ import {
   Code2, Brain, BarChart3, Trophy, Settings, ChevronRight,
   GraduationCap, FlameKindling, Zap, BookOpen, Target,
   MonitorCheck, Menu, X, FileCog, Search, Bell, Bot, Compass,
-  ChevronLeft, Building2, DollarSign
+  ChevronLeft, Building2, DollarSign, Sparkles, TrendingUp, ShieldCheck
 } from 'lucide-react';
 
 const navGroups = [
   {
-    label: 'Overview',
+    label: 'CAREER',
     items: [
       { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, exact: true },
-      { href: '/dashboard/applications', label: 'Job Applications', icon: FileCog },
-      { href: '/dashboard/notifications', label: 'Notifications', icon: Bell },
-    ]
-  },
-  {
-    label: 'Preparation',
-    items: [
       { href: '/dashboard/profile', label: 'Master Profile', icon: UserCircle },
-      { href: '/dashboard/resumes', label: 'Resume Builder', icon: FileText },
-      { href: '/dashboard/ats', label: 'ATS Analyzer', icon: Target },
-    ]
-  },
-  {
-    label: 'Job Hunt',
-    items: [
-      { href: '/dashboard/jobs', label: 'Job Search', icon: Briefcase },
-      { href: '/dashboard/copilot', label: 'Auto-Apply Bot', icon: Zap },
-      { href: '/dashboard/tools/company-intel', label: 'Company Intel', icon: Building2 },
-      { href: '/dashboard/tools/salary-negotiation', label: 'Salary Negotiator', icon: DollarSign },
-    ]
-  },
-  {
-    label: 'Interviews & Tests',
-    items: [
-      { href: '/dashboard/interview', label: 'AI Interviews', icon: Brain },
-      { href: '/dashboard/simulations', label: 'Full Simulations', icon: Bot },
-      { href: '/dashboard/assess', label: 'Assessments', icon: MonitorCheck },
-      { href: '/dashboard/code', label: 'Coding Arena', icon: Code2 },
-    ]
-  },
-  {
-    label: 'Growth',
-    items: [
-      { href: '/dashboard/learn', label: 'Learning Paths', icon: BookOpen },
-      { href: '/dashboard/analytics', label: 'Analytics', icon: BarChart3 },
-      { href: '/dashboard/achievements', label: 'Achievements', icon: Trophy },
-      { href: '/dashboard/memory', label: 'Career Memory', icon: Database },
       { href: '/dashboard/passport', label: 'Career Passport', icon: Compass },
+      { href: '/dashboard/memory', label: 'Career Memory', icon: Database }
+    ]
+  },
+  {
+    label: 'RESUME',
+    items: [
+      { href: '/dashboard/resumes', label: 'Resume Builder', icon: FileText },
+      { href: '/dashboard/resumes/studio', label: 'Resume Studio', icon: FileCog },
+      { href: '/dashboard/resume-intelligence', label: 'ATS Analyzer', icon: Brain },
+      { href: '/dashboard/resumes/tailor', label: 'Resume Tailoring', icon: Sparkles }
+    ]
+  },
+  {
+    label: 'JOB SEARCH',
+    items: [
+      { href: '/dashboard/jobs', label: 'Job Intelligence', icon: Briefcase },
+      { href: '/dashboard/applications', label: 'Job Tracker', icon: FileCog },
+      { href: '/dashboard/jobs/autopilot', label: 'Application Copilot', icon: Zap }
+    ]
+  },
+  {
+    label: 'PRACTICE',
+    items: [
+      { href: '/dashboard/assess', label: 'Assessments', icon: MonitorCheck },
+      { href: '/dashboard/code', label: 'Coding Practice', icon: Code2 },
+      { href: '/dashboard/questions', label: 'Question Bank', icon: BookOpen },
+      { href: '/dashboard/roadmap', label: 'Learning Roadmap', icon: Target }
+    ]
+  },
+  {
+    label: 'INTERVIEW',
+    items: [
+      { href: '/dashboard/interview', label: 'Mock Interview', icon: Bot },
+      { href: '/dashboard/interview/history', label: 'Interview History', icon: Database },
+      { href: '/dashboard/interview/simulator', label: 'Interview Simulator', icon: MonitorCheck }
+    ]
+  },
+  {
+    label: 'INSIGHTS',
+    items: [
+      { href: '/dashboard/performance', label: 'Performance', icon: Trophy },
+      { href: '/dashboard/skills/gaps', label: 'Skill Analytics', icon: ShieldCheck },
+      { href: '/dashboard/readiness', label: 'Career Readiness', icon: TrendingUp }
+    ]
+  },
+  {
+    label: 'TOOLS',
+    items: [
+      { href: '/dashboard/copilot', label: 'AI Career Coach', icon: Bot },
+      { href: '/dashboard/tools', label: 'Document Tools', icon: FileText },
+      { href: '/dashboard/settings', label: 'Settings', icon: Settings }
     ]
   }
 ];
@@ -203,7 +218,7 @@ export function Sidebar({ userName, streak = 0, xp = 0, level = 1 }: SidebarProp
           <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
             <GraduationCap className="w-4 h-4 text-primary-foreground" />
           </div>
-          <span className="font-bold text-lg tracking-tight">CareerOS</span>
+          <span className="font-bold text-lg tracking-tight">Rolevia</span>
         </Link>
         <div className="flex items-center gap-3">
           <Link href="/dashboard/ai" className="relative p-2 rounded-full hover:bg-muted/80">

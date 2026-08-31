@@ -79,6 +79,9 @@ export const ResumeContentSchema = z.object({
   lineSpacing: z.number().default(1.4),
   margins: z.object({ top: z.number(), bottom: z.number(), left: z.number(), right: z.number() }).default({ top: 20, bottom: 20, left: 20, right: 20 }),
   sections: z.array(ResumeSectionSchema),
+  accentColor: z.string().optional().default('default'),
+  pageSize: z.string().optional().default('a4'),
+  marginsPreset: z.string().optional().default('standard'),
 });
 
 // ─── AI Tailoring Response Schema ────────────────────────────────────────────

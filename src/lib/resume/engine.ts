@@ -181,6 +181,9 @@ export function buildResumeFromProfile(profile: GroundedProfile): ResumeContent 
     lineSpacing: 1.4,
     margins: { top: 20, bottom: 20, left: 20, right: 20 },
     sections,
+    accentColor: 'default',
+    pageSize: 'a4',
+    marginsPreset: 'standard'
   };
 }
 

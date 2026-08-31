@@ -18,7 +18,7 @@ export enum TaskType {
 }
 
 export async function routeTask(taskType: TaskType, payload: string, context?: string) {
-  const systemPrompt = `You are the CareerOS ${taskType} agent.\n${context || ''}`;
+  const systemPrompt = `You are the Rolevia ${taskType} agent.\n${context || ''}`;
   
   switch (taskType) {
     case TaskType.GENERAL_CAREER_ASSISTANT:

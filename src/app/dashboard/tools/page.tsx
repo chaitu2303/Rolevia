@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Image, FileText, Download, Upload, ShieldCheck, RefreshCw, RefreshCcw } from 'lucide-react';
+import { Image as ImageIcon, FileText, Download, Upload, ShieldCheck, RefreshCw, RefreshCcw } from 'lucide-react';
 import { PDFDocument } from 'pdf-lib';
 
 export default function UtilityStudio() {
@@ -140,7 +140,7 @@ export default function UtilityStudio() {
           className={`px-6 py-3 font-black text-lg uppercase border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-transform ${activeTab === 'JPG_PNG' ? 'bg-[#90c0ff] translate-y-1 translate-x-1 shadow-[0px_0px_0px_0px_rgba(0,0,0,1)]' : 'bg-white hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]'}`}
           onClick={() => { setActiveTab('JPG_PNG'); setSelectedFiles([]); setResultUrl(null); setLogs([]); }}
         >
-          <div className="flex items-center gap-2"><Image className="w-5 h-5"/> JPG to PNG</div>
+          <div className="flex items-center gap-2"><ImageIcon className="w-5 h-5"/> JPG to PNG</div>
         </button>
         <button 
           className={`px-6 py-3 font-black text-lg uppercase border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-transform ${activeTab === 'PDF_WORD' ? 'bg-[#23a094] text-white translate-y-1 translate-x-1 shadow-[0px_0px_0px_0px_rgba(0,0,0,1)]' : 'bg-white hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]'}`}
@@ -184,7 +184,7 @@ export default function UtilityStudio() {
                 <div className="pt-6">
                   {activeTab === 'JPG_PNG' && (
                     <Button onClick={convertJpgToPng} disabled={processing} className="w-full h-14 text-lg rounded-none border-4 border-black bg-[#ff90e8] hover:bg-[#ff70e0] text-black font-black uppercase shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 hover:translate-x-1 hover:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] transition-all">
-                      {processing ? <RefreshCw className="w-6 h-6 animate-spin mr-2" /> : <Image className="w-6 h-6 mr-2" />}
+                      {processing ? <RefreshCw className="w-6 h-6 animate-spin mr-2" /> : <ImageIcon className="w-6 h-6 mr-2" />}
                       Start Conversion
                     </Button>
                   )}

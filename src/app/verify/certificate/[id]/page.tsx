@@ -20,7 +20,7 @@ export default async function CertificateVerificationPage({ params }: { params: 
   if (!cert) return notFound();
 
   const competencies = JSON.parse(cert.competencies as string);
-  const displayName = cert.user.isPublicProfile ? cert.user.name : "CareerOS Member";
+  const displayName = cert.user.isPublicProfile ? cert.user.name : "Rolevia Member";
 
   return (
     <div className="max-w-3xl mx-auto py-16 px-4">
@@ -33,7 +33,7 @@ export default async function CertificateVerificationPage({ params }: { params: 
           <CardTitle className="text-3xl font-bold tracking-tight">
             {cert.status === 'VALID' ? 'Verified Credential' : `Credential ${cert.status}`}
           </CardTitle>
-          <p className="text-slate-500 mt-2">Issued by CareerOS Professional Certifications</p>
+          <p className="text-slate-500 mt-2">Issued by Rolevia Professional Certifications</p>
         </CardHeader>
         
         <CardContent className="p-8 space-y-6">
@@ -54,7 +54,7 @@ export default async function CertificateVerificationPage({ params }: { params: 
                 {new Date(cert.issuedAt).toLocaleDateString()}
               </p>
             </div>
-
+ 
             <div>
               <p className="text-sm font-semibold text-slate-500 uppercase">Credential ID</p>
               <p className="text-lg font-medium text-slate-900 font-mono">{cert.certificateCode}</p>
@@ -73,7 +73,7 @@ export default async function CertificateVerificationPage({ params }: { params: 
               </div>
             </div>
           )}
-
+ 
           {cert.status === 'REVOKED' && (
             <div className="mt-8 pt-6 border-t border-red-100 bg-red-50 p-4 rounded-md">
               <p className="text-sm text-red-800 font-medium text-center">
@@ -85,7 +85,7 @@ export default async function CertificateVerificationPage({ params }: { params: 
       </Card>
       
       <p className="text-center text-xs text-slate-400 mt-8">
-        CareerOS automatically redacts private personal identifiable information on public verification endpoints.
+        Rolevia automatically redacts private personal identifiable information on public verification endpoints.
       </p>
     </div>
   );

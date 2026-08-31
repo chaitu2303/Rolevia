@@ -84,6 +84,7 @@ export default function MockInterviewPage() {
 
       if (result.action === 'END_INTERVIEW') {
         setIsCompleted(true);
+        router.push(`/dashboard/interview/${sessionId}/evaluation`);
       }
     } catch (err: any) {
       alert(err.message || 'Error communicating with AI');

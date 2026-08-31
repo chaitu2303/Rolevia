@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Onboarding | CareerOS AI',
+  title: 'Onboarding | Rolevia AI',
   description: 'Set up your Master Career Profile',
 };
 

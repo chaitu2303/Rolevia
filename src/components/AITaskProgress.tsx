@@ -17,7 +17,7 @@ interface AITaskProgressProps {
   currentStepId?: string;
 }
 
-export function AITaskProgress({ title = 'AI Engine Processing', steps, currentStepId }: AITaskProgressProps) {
+export function AITaskProgress({ title = 'ROLEVIA INTELLIGENCE ENGINE', steps, currentStepId }: AITaskProgressProps) {
   return (
     <div className="bg-card border border-border/50 rounded-2xl p-6 shadow-sm">
       <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border/50">
@@ -27,14 +27,14 @@ export function AITaskProgress({ title = 'AI Engine Processing', steps, currentS
           </div>
           {steps.some(s => s.status === 'active') && (
             <span className="absolute -top-1 -right-1 flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+              <span className="motion-safe:animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
               <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
             </span>
           )}
         </div>
         <div>
-          <h3 className="font-bold text-foreground">{title}</h3>
-          <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mt-0.5">CareerOS Core</p>
+          <h3 className="font-bold text-foreground text-sm tracking-tight">{title}</h3>
+          <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mt-0.5">Processing Pipeline</p>
         </div>
       </div>
 
@@ -71,7 +71,7 @@ export function AITaskProgress({ title = 'AI Engine Processing', steps, currentS
                     {step.label}
                   </div>
                   {isActive && (
-                    <div className="text-xs text-muted-foreground mt-1 animate-pulse">
+                    <div className="text-xs text-muted-foreground mt-1 motion-safe:animate-pulse">
                       Processing...
                     </div>
                   )}

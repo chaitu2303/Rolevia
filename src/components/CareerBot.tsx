@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Bot, Send, X, Minimize2, Maximize2, Cpu, Wifi, WifiOff, Loader2, ChevronDown, Sparkles } from 'lucide-react';
 import { buildPrompt, QUICK_RESPONSES } from '@/lib/ai/CareerKnowledgeBase';
 import ReactMarkdown from 'react-markdown';
+import Image from 'next/image';
 
 interface Message {
   id: string;
@@ -27,11 +28,11 @@ const SUGGESTED_QUESTIONS = [
 export function CareerBot() {
   const [open, setOpen] = useState(false);
   const [minimized, setMinimized] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
+  const [messages, setMessages] = useState<Message[]>(() => [
     {
       id: '0',
       role: 'bot',
-      content: `👋 Hi! I'm **CareerBot** — a free AI career coach running **100% on your device**. No API. No data sent anywhere. Ever.\n\nAsk me about resumes, interviews, salary negotiation, LinkedIn, or job search strategy!`,
+      content: `👋 Hi! I'm **Rolevia Copilot** — a free AI career coach running **100% on your device**. No API. No data sent anywhere. Ever.\n\nAsk me about resumes, interviews, salary negotiation, LinkedIn, or job search strategy!`,
       ts: Date.now(),
     }
   ]);
@@ -200,7 +201,7 @@ export function CareerBot() {
 
   return (
     <>
-      {/* Floating Button */}
+      {/* Subtle Copilot Trigger Button */}
       <AnimatePresence>
         {!open && (
           <motion.button
@@ -208,109 +209,78 @@ export function CareerBot() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             onClick={() => setOpen(true)}
-            className="fixed bottom-6 right-6 z-50 w-16 h-16 bg-black border-4 border-black text-white flex items-center justify-center shadow-[6px_6px_0px_0px_rgba(255,144,232,1)] hover:shadow-[2px_2px_0px_0px_rgba(255,144,232,1)] hover:translate-x-1 hover:translate-y-1 transition-all group"
-            aria-label="Open CareerBot"
+            className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-primary text-primary-foreground rounded-full flex items-center justify-center premium-shadow hover:scale-105 transition-all group border-4 border-background"
+            aria-label="Open Rolevia Copilot"
           >
-            <Bot className="w-8 h-8 group-hover:scale-110 transition-transform" />
-            <span className="absolute -top-2 -right-2 bg-[#FF90E8] border-2 border-black text-black text-[9px] font-black px-1.5 py-0.5 uppercase">Free</span>
+            <div className="font-serif font-bold text-xl">R</div>
+            <span className="absolute top-0 right-0 w-3 h-3 bg-success rounded-full border-2 border-background" />
           </motion.button>
         )}
       </AnimatePresence>
 
-      {/* Chat Window */}
+      {/* Premium Side Panel */}
       <AnimatePresence>
         {open && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 40 }}
-            animate={{ 
-              opacity: 1, 
-              scale: 1, 
-              y: 0,
-              height: minimized ? 'auto' : undefined
-            }}
-            exit={{ opacity: 0, scale: 0.8, y: 40 }}
-            className="fixed bottom-6 right-6 z-50 w-[420px] max-w-[calc(100vw-24px)] bg-white border-4 border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] flex flex-col"
-            style={{ maxHeight: minimized ? 'auto' : '600px' }}
-          >
-            {/* Header */}
-            <div className="bg-black text-white px-4 py-3 flex items-center gap-3 shrink-0">
-              <div className="bg-[#FF90E8] border-2 border-black w-9 h-9 flex items-center justify-center shrink-0">
-                <Bot className="w-5 h-5 text-black" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="font-black uppercase text-sm flex items-center gap-2">
-                  CareerBot
-                  <span className="bg-[#FFE500] text-black text-[9px] font-black px-1.5 py-0.5 border border-black/30">ON-DEVICE AI</span>
-                </div>
-                <StatusIndicator />
-              </div>
-              <div className="flex items-center gap-2">
-                <button onClick={() => setMinimized(!minimized)} className="text-gray-400 hover:text-white transition-colors">
-                  {minimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
-                </button>
-                <button onClick={() => setOpen(false)} className="text-gray-400 hover:text-white transition-colors">
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Model Loading Banner */}
-            <AnimatePresence>
-              {modelStatus === 'loading' && !minimized && (
-                <motion.div
-                  initial={{ height: 0 }}
-                  animate={{ height: 'auto' }}
-                  exit={{ height: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="bg-[#FFE500] border-b-4 border-black px-4 py-2">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs font-black uppercase">Loading AI Model to your device...</span>
-                      <span className="text-xs font-black">{modelProgress}%</span>
-                    </div>
-                    <div className="h-2 bg-white border-2 border-black">
-                      <motion.div
-                        animate={{ width: `${modelProgress}%` }}
-                        className="h-full bg-black"
-                      />
-                    </div>
-                    <p className="text-[10px] font-bold mt-1 text-black/60 truncate">{modelFile || 'Downloading...'}</p>
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setOpen(false)}
+              className="fixed inset-0 bg-background/50 backdrop-blur-sm z-40 md:hidden"
+            />
+            <motion.div
+              initial={{ x: '100%', opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: '100%', opacity: 0 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 bottom-0 z-50 w-full md:w-[420px] bg-card border-l border-border flex flex-col premium-shadow"
+            >
+              <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0 bg-card/80 backdrop-blur-md">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 border border-border flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+                    <Image src="/icon.svg" alt="Rolevia Copilot" width={24} height={24} className="object-contain" />
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  <div>
+                    <h2 className="font-bold text-sm">Rolevia Copilot</h2>
+                    <StatusIndicator />
+                  </div>
+                </div>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-muted text-muted-foreground transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
 
-            {/* Messages */}
-            {!minimized && (
-              <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#faf8f5]">
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-background/50">
                 {messages.map((msg) => (
                   <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    {msg.role === 'bot' && (
-                      <div className="bg-[#FF90E8] border-2 border-black w-7 h-7 flex items-center justify-center shrink-0 mr-2 mt-1">
-                        <Bot className="w-4 h-4 text-black" />
-                      </div>
-                    )}
-                    <div className={`max-w-[85%] px-4 py-3 border-2 border-black text-sm font-medium ${
-                      msg.role === 'user'
-                        ? 'bg-black text-white rounded-tl-xl rounded-bl-xl rounded-tr-none shadow-[3px_3px_0px_0px_rgba(0,0,0,0.3)]'
-                        : 'bg-white rounded-tr-xl rounded-br-xl rounded-tl-none shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]'
-                    }`}>
+                    <div
+                      className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
+                        msg.role === 'user'
+                          ? 'bg-primary text-primary-foreground rounded-tr-sm'
+                          : 'bg-card border border-border shadow-sm rounded-tl-sm text-card-foreground'
+                      }`}
+                    >
                       {msg.thinking ? (
-                        <div className="flex items-center gap-2 text-gray-500">
+                        <div className="flex items-center gap-2 text-muted-foreground">
                           <div className="flex gap-1">
                             {[0, 1, 2].map(i => (
                               <motion.div
                                 key={i}
-                                animate={{ y: [0, -4, 0] }}
+                                animate={{ y: [0, -3, 0] }}
                                 transition={{ repeat: Infinity, delay: i * 0.15, duration: 0.5 }}
-                                className="w-2 h-2 bg-gray-400 rounded-full"
+                                className="w-1.5 h-1.5 bg-current rounded-full"
                               />
                             ))}
                           </div>
-                          <span className="text-xs">Thinking...</span>
+                          <span className="text-xs">Analyzing...</span>
                         </div>
                       ) : (
-                        <div className="prose prose-sm max-w-none prose-strong:font-black prose-p:my-1 prose-ul:my-1 prose-li:my-0">
+                        <div className="prose prose-sm dark:prose-invert max-w-none prose-p:my-1 prose-ul:my-1 prose-li:my-0">
                           <ReactMarkdown>{msg.content}</ReactMarkdown>
                         </div>
                       )}
@@ -319,56 +289,51 @@ export function CareerBot() {
                 ))}
                 <div ref={bottomRef} />
               </div>
-            )}
 
-            {/* Suggested Questions */}
-            {!minimized && messages.length <= 1 && (
-              <div className="px-4 py-2 bg-white border-t-2 border-black flex gap-2 overflow-x-auto scrollbar-hide shrink-0">
-                {SUGGESTED_QUESTIONS.map((q, i) => (
+              {/* Suggestions */}
+              {messages.length <= 1 && (
+                <div className="px-6 py-3 flex gap-2 overflow-x-auto scrollbar-hide shrink-0 bg-background/50">
+                  {SUGGESTED_QUESTIONS.map((q, i) => (
+                    <button
+                      key={i}
+                      onClick={() => sendMessage(q.slice(q.indexOf(' ') + 1))}
+                      className="whitespace-nowrap bg-card border border-border px-3 py-1.5 rounded-full text-xs font-medium hover:bg-muted transition-colors text-muted-foreground hover:text-foreground shrink-0 shadow-sm"
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Input */}
+              <div className="p-4 bg-card border-t border-border shrink-0">
+                <div className="relative flex items-end gap-2 bg-muted/50 rounded-2xl p-2 border border-border focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/50 transition-all">
+                  <textarea
+                    ref={inputRef}
+                    value={input}
+                    onChange={e => setInput(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Ask anything..."
+                    disabled={isGenerating}
+                    rows={1}
+                    className="flex-1 resize-none bg-transparent px-3 py-2 text-sm focus:outline-none placeholder:text-muted-foreground disabled:opacity-60 min-h-[40px] max-h-[120px]"
+                  />
                   <button
-                    key={i}
-                    onClick={() => sendMessage(q.slice(q.indexOf(' ') + 1))}
-                    className="whitespace-nowrap bg-[#faf8f5] border-2 border-black px-3 py-1.5 text-xs font-bold hover:bg-[#FFE500] transition-colors shrink-0 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                    onClick={() => sendMessage(input)}
+                    disabled={!input.trim() || isGenerating}
+                    className="w-10 h-10 flex items-center justify-center bg-primary text-primary-foreground rounded-xl shrink-0 hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {q}
+                    <Send className="w-4 h-4 ml-0.5" />
                   </button>
-                ))}
+                </div>
+                <div className="mt-3 text-center">
+                  <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground flex items-center justify-center gap-1.5">
+                    <Sparkles className="w-3 h-3" /> Rolevia Career Intelligence
+                  </p>
+                </div>
               </div>
-            )}
-
-            {/* Input */}
-            {!minimized && (
-              <div className="flex items-end gap-2 p-3 border-t-4 border-black bg-white shrink-0">
-                <textarea
-                  ref={inputRef}
-                  value={input}
-                  onChange={e => setInput(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Ask about resumes, interviews, salary..."
-                  disabled={isGenerating}
-                  rows={1}
-                  className="flex-1 resize-none bg-[#faf8f5] border-2 border-black px-3 py-2 text-sm font-medium focus:outline-none focus:border-black placeholder:text-gray-400 disabled:opacity-60"
-                  style={{ maxHeight: '80px' }}
-                />
-                <button
-                  onClick={() => sendMessage(input)}
-                  disabled={!input.trim() || isGenerating}
-                  className="bg-black text-white w-10 h-10 flex items-center justify-center border-2 border-black shrink-0 shadow-[3px_3px_0px_0px_rgba(0,0,0,0.3)] hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,0.3)] transition-all disabled:opacity-50 disabled:pointer-events-none"
-                >
-                  <Send className="w-4 h-4" />
-                </button>
-              </div>
-            )}
-
-            {/* Privacy Footer */}
-            {!minimized && (
-              <div className="px-4 py-2 bg-[#faf8f5] border-t-2 border-black text-center">
-                <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">
-                  🔒 All processing on your device · Zero data sent · Always free
-                </p>
-              </div>
-            )}
-          </motion.div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>

@@ -31,6 +31,7 @@ export default function ApplicationTrackerHub() {
   const [syncOpen, setSyncOpen] = useState(false);
   const [jobUrl, setJobUrl] = useState('');
   const [isSyncing, setIsSyncing] = useState(false);
+  const [showAutoFill, setShowAutoFill] = useState(false);
 
   const statuses = ['SAVED', 'PREPARING', 'APPLIED', 'INTERVIEW', 'OFFER', 'REJECTED'];
 
@@ -134,8 +135,6 @@ export default function ApplicationTrackerHub() {
       </div>
     );
   }
-
-  const [showAutoFill, setShowAutoFill] = useState(false);
 
   return (
     <div className="max-w-7xl mx-auto py-8 px-4 h-full flex flex-col min-h-[calc(100vh-4rem)]">

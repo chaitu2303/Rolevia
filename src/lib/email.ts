@@ -4,8 +4,8 @@ import { Resend } from 'resend';
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? 'onboarding@resend.dev';
-const APP_NAME = 'Placement2Job';
-const PROD_URL = process.env.NEXTAUTH_URL ?? 'https://careeros-iota.vercel.app';
+const APP_NAME = 'Rolevia';
+const PROD_URL = process.env.NEXTAUTH_URL ?? 'https://rolevia.vercel.app';
 
 export async function sendPasswordResetEmail(to: string, resetToken: string): Promise<void> {
   const resetUrl = `${PROD_URL}/reset-password?token=${resetToken}`;
@@ -20,7 +20,7 @@ export async function sendPasswordResetEmail(to: string, resetToken: string): Pr
   const { error } = await resend.emails.send({
     from: `${APP_NAME} <${FROM_EMAIL}>`,
     to,
-    subject: 'Reset your CareerOS password',
+    subject: `Reset your ${APP_NAME} password`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -35,7 +35,7 @@ export async function sendPasswordResetEmail(to: string, resetToken: string): Pr
             </div>
             <h2 style="color: #0f172a; font-size: 20px; font-weight: 600; margin: 0 0 12px;">Reset your password</h2>
             <p style="color: #64748b; font-size: 15px; line-height: 1.6; margin: 0 0 24px;">
-              We received a request to reset the password for your CareerOS account. Click the button below to create a new password.
+              We received a request to reset the password for your ${APP_NAME} account. Click the button below to create a new password.
             </p>
             <a href="${resetUrl}" style="display: block; text-align: center; background: #0f172a; color: white; text-decoration: none; padding: 14px 24px; border-radius: 10px; font-weight: 600; font-size: 15px; margin-bottom: 24px;">
               Reset Password

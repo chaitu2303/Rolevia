@@ -1,5 +1,5 @@
-// Content Script for CareerOS Extension
-console.log("CareerOS Content Script Loaded");
+// Content Script for Rolevia Extension
+console.log("Rolevia Content Script Loaded");
 
 const SENSITIVE_KEYWORDS = [
   'ssn', 'social security', 'password', 'credit card', 'ethnicity', 
@@ -63,7 +63,7 @@ function autofillForm(profileData) {
   inputs.forEach(input => {
     if (isSensitiveField(input)) {
       input.style.border = '2px solid orange';
-      input.title = 'CareerOS: Skipped Sensitive Field (Manual Review Required)';
+      input.title = 'Rolevia: Skipped Sensitive Field (Manual Review Required)';
       return;
     }
 
@@ -98,7 +98,7 @@ function autofillForm(profileData) {
       filledCount++;
     } else if (input.tagName.toLowerCase() === 'textarea' && (name.includes('cover') || id.includes('cover'))) {
       input.style.border = '2px solid blue';
-      input.title = 'CareerOS: Cover Letter / Custom Answer requires manual review.';
+      input.title = 'Rolevia: Cover Letter / Custom Answer requires manual review.';
     }
   });
   

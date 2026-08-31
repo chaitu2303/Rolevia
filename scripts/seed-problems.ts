@@ -1,89 +1,125 @@
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { Pool } from 'pg';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as dotenv from 'dotenv';
+
+// Load env variables
+dotenv.config({ path: '.env.local' });
+dotenv.config({ path: '.env' });
 
 async function main() {
-  process.env.DATABASE_URL = process.env.DATABASE_URL || 'postgres://user@localhost:5433/careeros_test';
+  if (!process.env.DATABASE_URL) {
+    console.error('DATABASE_URL is not set in environment.');
+    process.exit(1);
+  }
+
   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
   const adapter = new PrismaPg(pool);
   const prisma = new PrismaClient({ adapter });
 
-  const count = await prisma.codingProblem.count();
+  console.log('Reading leetcode.csv...');
+  const csvPath = path.join(process.cwd(), 'datasets', 'leetcode.csv');
+  if (!fs.existsSync(csvPath)) {
+    console.error('leetcode.csv not found at', csvPath);
+    process.exit(1);
+  }
 
-  const p1 = await prisma.codingProblem.upsert({
-    where: { slug: 'two-sum' },
-    update: {},
-    create: {
-      title: 'Two Sum',
-      slug: 'two-sum',
-      difficulty: 'EASY',
-      topic: 'Arrays',
-      description: 'Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target. You may assume that each input would have exactly one solution, and you may not use the same element twice. You can return the answer in any order.',
-      status: 'PUBLISHED',
-      timeLimit: 2000,
-      memoryLimit: 256,
-      examples: {
-        create: [
-          { input: '[[2,7,11,15], 9]', output: '[0,1]', orderIndex: 0 },
-          { input: '[[3,2,4], 6]', output: '[1,2]', orderIndex: 1 }
-        ]
-      },
-      templates: {
-        create: [
-          { language: 'javascript', code: '/**\n * @param {number[]} nums\n * @param {number} target\n * @return {number[]}\n */\nfunction twoSum(nums, target) {\n    \n}' }
-        ]
-      },
-      testCases: {
-        create: [
-          { input: '[[2,7,11,15], 9]', expectedOutput: '[0,1]', isHidden: false, orderIndex: 0 },
-          { input: '[[3,2,4], 6]', expectedOutput: '[1,2]', isHidden: false, orderIndex: 1 },
-          { input: '[[3,3], 6]', expectedOutput: '[0,1]', isHidden: true, orderIndex: 2 }
-        ]
-      }
-    }
-  });
+  const csvData = fs.readFileSync(csvPath, 'utf8');
+  const lines = csvData.split('\n');
 
-  console.log('Seeded problem:', p1.title);
-  
-  const p2 = await prisma.codingProblem.upsert({
-    where: { slug: 'valid-palindrome' },
-    update: {},
-    create: {
-      title: 'Valid Palindrome',
-      slug: 'valid-palindrome',
-      difficulty: 'EASY',
-      topic: 'Strings',
-      description: 'A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward. Alphanumeric characters include letters and numbers. Given a string s, return true if it is a palindrome, or false otherwise.',
-      status: 'PUBLISHED',
-      timeLimit: 2000,
-      memoryLimit: 256,
-      examples: {
-        create: [
-          { input: '["A man, a plan, a canal: Panama"]', output: 'true', orderIndex: 0 },
-          { input: '["race a car"]', output: 'false', orderIndex: 1 }
-        ]
-      },
-      templates: {
-        create: [
-          { language: 'javascript', code: '/**\n * @param {string} s\n * @return {boolean}\n */\nfunction isPalindrome(s) {\n    \n}' }
-        ]
-      },
-      testCases: {
-        create: [
-          { input: '["A man, a plan, a canal: Panama"]', expectedOutput: 'true', isHidden: false, orderIndex: 0 },
-          { input: '["race a car"]', expectedOutput: 'false', isHidden: false, orderIndex: 1 },
-          { input: '[" "]', expectedOutput: 'true', isHidden: true, orderIndex: 2 }
-        ]
-      }
+  let count = 0;
+  console.log(`Found ${lines.length - 1} potential problems. Seeding a sample of 150 problems...`);
+
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+
+    const cols = line.split(',');
+    if (cols.length < 7) continue;
+
+    const title = cols[2]?.replace(/"/g, '').trim();
+    const link = cols[3]?.trim();
+    const difficultyNum = cols[6]; // 1, 2, 3
+
+    if (!title || !link) continue;
+
+    let difficulty = 'EASY';
+    if (difficultyNum === '2') difficulty = 'MEDIUM';
+    if (difficultyNum === '3') difficulty = 'HARD';
+
+    const slug = title.toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
+
+    const desc = `Implement the solution for **${title}**. More details can be found on LeetCode: [LeetCode Link](${link})`;
+
+    // Check if exists
+    const existing = await prisma.codingProblem.findUnique({
+      where: { slug }
+    });
+
+    if (!existing) {
+      await prisma.codingProblem.create({
+        data: {
+          title,
+          slug,
+          difficulty,
+          topic: 'General',
+          description: desc,
+          status: 'PUBLISHED',
+          timeLimit: 2000,
+          memoryLimit: 256,
+          templates: {
+            create: [
+              {
+                language: 'javascript',
+                code: `// Template for ${title}\nfunction solve() {\n  // Write your code here\n}`
+              },
+              {
+                language: 'python',
+                code: `# Template for ${title}\ndef solve():\n    pass`
+              }
+            ]
+          },
+          examples: {
+            create: [
+              {
+                input: 'Example input',
+                output: 'Example output',
+                explanation: 'Standard test case execution.',
+                orderIndex: 0
+              }
+            ]
+          },
+          testCases: {
+            create: [
+              {
+                input: 'Example input',
+                expectedOutput: 'Example output',
+                isHidden: false,
+                orderIndex: 0
+              }
+            ]
+          }
+        }
+      });
+      count++;
     }
-  });
-  
-  console.log('Seeded problem:', p2.title);
+
+    if (count >= 150) {
+      break;
+    }
+  }
+
+  console.log(`Successfully seeded ${count} coding problems from leetcode.csv!`);
   await prisma.$disconnect();
+  await pool.end();
 }
 
-main()
-  .catch(e => {
-    console.error(e);
-    process.exit(1);
-  });
+main().catch(err => {
+  console.error('Seeding error:', err);
+  process.exit(1);
+});

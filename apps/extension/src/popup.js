@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
       roleTitle: currentJob.roleTitle 
     }, (res) => {
       if (res?.success) {
-        setStatus('Saved to CareerOS Tracker!');
+        setStatus('Saved to Rolevia Tracker!');
         document.getElementById('btn-track').classList.add('hidden');
       } else {
         setStatus('Failed to save: ' + res?.error);

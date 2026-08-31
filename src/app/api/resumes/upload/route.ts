@@ -15,23 +15,35 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const formData = await req.formData();
-    const file = formData.get('file') as File | null;
-    if (!file) {
-      return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
-    }
-
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    // Parse PDF
+    const contentType = req.headers.get('content-type') || '';
     let text = '';
-    try {
-      const data = await pdfParse(buffer);
-      text = data.text;
-    } catch (e) {
-      console.error('PDF parsing error', e);
-      return NextResponse.json({ error: 'Failed to parse PDF file' }, { status: 400 });
+    let title = 'Pasted Resume';
+
+    if (contentType.includes('application/json')) {
+      const body = await req.json();
+      text = body.text || '';
+      if (!text.trim()) {
+        return NextResponse.json({ error: 'Pasted text is empty' }, { status: 400 });
+      }
+    } else {
+      const formData = await req.formData();
+      const file = formData.get('file') as File | null;
+      if (!file) {
+        return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
+      }
+      title = `Uploaded: ${file.name}`;
+
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+
+      // Parse PDF
+      try {
+        const data = await pdfParse(buffer);
+        text = data.text;
+      } catch (e) {
+        console.error('PDF parsing error', e);
+        return NextResponse.json({ error: 'Failed to parse PDF file' }, { status: 400 });
+      }
     }
 
     // Default basic resume schema setup
@@ -79,7 +91,7 @@ export async function POST(req: Request) {
     const newResume = await prisma.resume.create({
       data: {
         userId: dbUser.id,
-        title: `Uploaded: ${file.name}`,
+        title: title,
         content: newContent,
         templateId: 'clean',
         versions: {

@@ -1,0 +1,31 @@
+{
+  "version": "1.0.0",
+  "source": "Rolevia original",
+  "license": "Rolevia original",
+  "importDate": "2026-08-30",
+  "fillerPhrases": [
+    "team player", "hard worker", "detail-oriented", "results-driven", "go-getter",
+    "self-starter", "dynamic", "passionate", "innovative", "motivated", "dedicated",
+    "enthusiastic", "proactive", "synergy", "leverage", "utilize", "paradigm",
+    "thought leader", "guru", "ninja", "rockstar", "wizard", "champion",
+    "disruptive", "game-changer", "cutting-edge", "best-in-class", "world-class",
+    "visionary", "out-of-the-box", "think outside the box", "value-add",
+    "strategic thinker", "action-oriented", "goal-oriented", "results-oriented",
+    "highly motivated", "highly skilled", "seasoned professional", "seasoned expert",
+    "track record of success", "proven track record", "vast experience",
+    "people person", "excellent communication skills", "strong work ethic",
+    "fast learner", "quick learner", "excellent interpersonal skills",
+    "attention to detail", "strong analytical skills", "strong problem-solving skills"
+  ],
+  "clichePhrases": [
+    "responsible for", "duties included", "helped with", "assisted in",
+    "worked on", "involved in", "participated in", "contributed to various",
+    "various projects", "multiple projects", "different clients", "various clients",
+    "seeking a challenging position", "looking to utilize my skills",
+    "seeking opportunities to grow", "dynamic environment", "fast-paced environment"
+  ],
+  "passiveVoicePatterns": [
+    "was responsible for", "was tasked with", "was asked to", "was assigned to",
+    "was selected to", "was chosen to", "was requested to", "has been"
+  ]
+}

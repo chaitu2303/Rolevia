@@ -26,13 +26,13 @@ export function ShareablePoster({
   const [copied, setCopied] = useState(false);
   const verifyUrl = `http://localhost:3000/verify/certificate/${certificateId}`;
 
-  const shareText = `🔥 Milestone Unlocked! I just hit a ${streakDays}-Day Learning & Placement Streak on Placement2Job as a ${targetRole}!
+  const shareText = `🔥 Milestone Unlocked! I just hit a ${streakDays}-Day Learning & Career Streak on Rolevia as a ${targetRole}!
 
 📊 Level ${level} | ${totalXp} XP | ${badgesCount} Badges Earned
 Verified Certificate ID: ${certificateId}
 
 Preparing for my next big career move! 🚀
-#Placement2Job #CareerGrowth #SoftwareEngineering #PlacementReady #JobSearch`;
+#Rolevia #CareerGrowth #SoftwareEngineering #PlacementReady #JobSearch`;
 
   const handleLinkedInShare = () => {
     const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(verifyUrl)}&text=${encodeURIComponent(shareText)}`;
@@ -154,7 +154,7 @@ Preparing for my next big career move! 🚀
               <CheckCircle className="w-4 h-4 text-[#ABF5D1]" />
               <span>Verifiable Credential ID: <strong className="text-[#FFE500]">{certificateId}</strong></span>
             </div>
-            <span className="text-gray-400">Verify at Placement2Job.com</span>
+            <span className="text-gray-400">Verify at Rolevia.com</span>
           </div>
 
         </div>

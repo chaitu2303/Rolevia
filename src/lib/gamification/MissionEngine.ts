@@ -20,7 +20,7 @@ export class MissionEngine {
     if (existing) return existing;
 
     // Capability check mapping
-    const hasSecureCodeExecution = false; 
+    const hasSecureCodeExecution = true; 
     const hasAiProvider = isAiAvailable();
 
     const tasks = [

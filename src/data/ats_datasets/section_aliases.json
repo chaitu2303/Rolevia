@@ -1,0 +1,62 @@
+{
+  "version": "1.0.0",
+  "source": "Rolevia original — ATS parsing research",
+  "license": "Rolevia original",
+  "importDate": "2026-08-30",
+  "sectionAliases": {
+    "experience": [
+      "work experience", "professional experience", "employment history", "work history",
+      "career history", "employment", "professional background", "work",
+      "positions held", "experience", "roles"
+    ],
+    "education": [
+      "education", "educational background", "academic background", "academics",
+      "academic qualifications", "qualifications", "degrees", "schooling",
+      "academic history", "educational history", "studies"
+    ],
+    "skills": [
+      "skills", "technical skills", "core competencies", "competencies",
+      "technologies", "tech stack", "technology stack", "tools & technologies",
+      "technical expertise", "expertise", "proficiencies", "capabilities",
+      "languages & frameworks", "programming languages", "technical proficiencies",
+      "key skills", "areas of expertise", "skill set"
+    ],
+    "summary": [
+      "summary", "professional summary", "profile", "career objective", "objective",
+      "about me", "about", "career profile", "overview", "professional profile",
+      "executive summary", "introduction", "professional overview"
+    ],
+    "projects": [
+      "projects", "personal projects", "side projects", "portfolio", "key projects",
+      "notable projects", "selected projects", "academic projects", "technical projects",
+      "project experience", "project highlights"
+    ],
+    "certifications": [
+      "certifications", "certificates", "professional certifications", "credentials",
+      "licenses & certifications", "licenses", "professional development",
+      "training & certifications", "industry certifications"
+    ],
+    "achievements": [
+      "achievements", "awards", "honors", "recognition", "accomplishments",
+      "key achievements", "notable achievements", "awards & recognition",
+      "honors & awards"
+    ],
+    "contact": [
+      "contact", "contact information", "personal information", "personal details",
+      "contact details", "info"
+    ],
+    "publications": [
+      "publications", "research", "papers", "research papers", "articles"
+    ],
+    "volunteer": [
+      "volunteer", "volunteering", "volunteer work", "community service",
+      "volunteer experience", "social work"
+    ],
+    "languages": [
+      "languages", "language skills", "spoken languages"
+    ],
+    "interests": [
+      "interests", "hobbies", "personal interests", "hobbies & interests"
+    ]
+  }
+}

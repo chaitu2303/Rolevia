@@ -1,0 +1,131 @@
+{
+  "version": "1.0.0",
+  "source": "Rolevia original — curated from O*NET Work Activities (public domain) and Resume best practices",
+  "license": "Rolevia original",
+  "importDate": "2026-08-30",
+  "roleTemplates": {
+    "software-engineer": {
+      "label": "Software Engineer",
+      "requiredSections": ["contact", "experience", "skills", "education"],
+      "optionalSections": ["summary", "projects", "certifications"],
+      "expectedKeywords": ["software", "development", "engineering", "code", "system", "api", "backend", "frontend", "testing", "deployment"],
+      "minExperienceBullets": 3,
+      "minSkills": 5,
+      "preferredCertifications": ["aws", "google cloud", "azure"],
+      "experienceLevelExpectations": {
+        "FRESHER": { "minBullets": 1, "projectsRequired": true, "leadershipExpected": false },
+        "ENTRY": { "minBullets": 2, "projectsRequired": false, "leadershipExpected": false },
+        "MID": { "minBullets": 3, "projectsRequired": false, "leadershipExpected": false },
+        "SENIOR": { "minBullets": 3, "projectsRequired": false, "leadershipExpected": true },
+        "LEAD": { "minBullets": 3, "projectsRequired": false, "leadershipExpected": true },
+        "MANAGER": { "minBullets": 3, "projectsRequired": false, "leadershipExpected": true }
+      }
+    },
+    "data-scientist": {
+      "label": "Data Scientist",
+      "requiredSections": ["contact", "experience", "skills", "education"],
+      "optionalSections": ["summary", "projects", "certifications", "publications"],
+      "expectedKeywords": ["machine learning", "python", "data", "model", "analysis", "statistics", "sql", "visualization"],
+      "minExperienceBullets": 3,
+      "minSkills": 6,
+      "preferredCertifications": ["aws ml", "google ml", "databricks"],
+      "experienceLevelExpectations": {
+        "FRESHER": { "minBullets": 1, "projectsRequired": true, "leadershipExpected": false },
+        "ENTRY": { "minBullets": 2, "projectsRequired": true, "leadershipExpected": false },
+        "MID": { "minBullets": 3, "projectsRequired": false, "leadershipExpected": false },
+        "SENIOR": { "minBullets": 3, "projectsRequired": false, "leadershipExpected": true }
+      }
+    },
+    "product-manager": {
+      "label": "Product Manager",
+      "requiredSections": ["contact", "experience", "education"],
+      "optionalSections": ["summary", "skills", "certifications"],
+      "expectedKeywords": ["product", "roadmap", "strategy", "stakeholder", "launch", "metrics", "user", "agile", "prioritization"],
+      "minExperienceBullets": 3,
+      "minSkills": 3,
+      "preferredCertifications": ["pmp", "cspo", "psm"],
+      "experienceLevelExpectations": {
+        "ENTRY": { "minBullets": 2, "projectsRequired": true, "leadershipExpected": false },
+        "MID": { "minBullets": 3, "projectsRequired": false, "leadershipExpected": false },
+        "SENIOR": { "minBullets": 3, "projectsRequired": false, "leadershipExpected": true },
+        "LEAD": { "minBullets": 3, "projectsRequired": false, "leadershipExpected": true }
+      }
+    },
+    "frontend-developer": {
+      "label": "Frontend Developer",
+      "requiredSections": ["contact", "experience", "skills", "education"],
+      "optionalSections": ["summary", "projects", "certifications"],
+      "expectedKeywords": ["react", "javascript", "typescript", "css", "html", "ui", "ux", "responsive", "performance"],
+      "minExperienceBullets": 3,
+      "minSkills": 5,
+      "preferredCertifications": [],
+      "experienceLevelExpectations": {
+        "FRESHER": { "minBullets": 1, "projectsRequired": true, "leadershipExpected": false },
+        "ENTRY": { "minBullets": 2, "projectsRequired": true, "leadershipExpected": false },
+        "MID": { "minBullets": 3, "projectsRequired": false, "leadershipExpected": false },
+        "SENIOR": { "minBullets": 3, "projectsRequired": false, "leadershipExpected": true }
+      }
+    },
+    "backend-developer": {
+      "label": "Backend Developer",
+      "requiredSections": ["contact", "experience", "skills", "education"],
+      "optionalSections": ["summary", "projects", "certifications"],
+      "expectedKeywords": ["api", "database", "server", "microservices", "scalability", "performance", "sql", "rest"],
+      "minExperienceBullets": 3,
+      "minSkills": 5,
+      "preferredCertifications": ["aws", "azure", "gcp"],
+      "experienceLevelExpectations": {
+        "FRESHER": { "minBullets": 1, "projectsRequired": true, "leadershipExpected": false },
+        "MID": { "minBullets": 3, "projectsRequired": false, "leadershipExpected": false },
+        "SENIOR": { "minBullets": 3, "projectsRequired": false, "leadershipExpected": true }
+      }
+    },
+    "devops-engineer": {
+      "label": "DevOps Engineer",
+      "requiredSections": ["contact", "experience", "skills", "education"],
+      "optionalSections": ["summary", "certifications", "projects"],
+      "expectedKeywords": ["ci/cd", "kubernetes", "docker", "terraform", "aws", "azure", "monitoring", "automation", "infrastructure"],
+      "minExperienceBullets": 3,
+      "minSkills": 6,
+      "preferredCertifications": ["cka", "aws devops", "google devops"],
+      "experienceLevelExpectations": {
+        "ENTRY": { "minBullets": 2, "projectsRequired": true, "leadershipExpected": false },
+        "MID": { "minBullets": 3, "projectsRequired": false, "leadershipExpected": false },
+        "SENIOR": { "minBullets": 3, "projectsRequired": false, "leadershipExpected": true }
+      }
+    },
+    "cybersecurity-analyst": {
+      "label": "Cybersecurity Analyst",
+      "requiredSections": ["contact", "experience", "skills", "education", "certifications"],
+      "optionalSections": ["summary", "projects"],
+      "expectedKeywords": ["security", "threat", "vulnerability", "incident", "siem", "penetration", "compliance", "firewall"],
+      "minExperienceBullets": 3,
+      "minSkills": 5,
+      "preferredCertifications": ["cissp", "ceh", "comptia security+", "oscp"],
+      "experienceLevelExpectations": {
+        "ENTRY": { "minBullets": 2, "projectsRequired": true, "leadershipExpected": false },
+        "MID": { "minBullets": 3, "projectsRequired": false, "leadershipExpected": false },
+        "SENIOR": { "minBullets": 3, "projectsRequired": false, "leadershipExpected": true }
+      }
+    },
+    "default": {
+      "label": "General",
+      "requiredSections": ["contact", "experience", "education"],
+      "optionalSections": ["summary", "skills", "projects", "certifications"],
+      "expectedKeywords": [],
+      "minExperienceBullets": 2,
+      "minSkills": 3,
+      "preferredCertifications": [],
+      "experienceLevelExpectations": {
+        "STUDENT": { "minBullets": 0, "projectsRequired": true, "leadershipExpected": false },
+        "FRESHER": { "minBullets": 1, "projectsRequired": true, "leadershipExpected": false },
+        "ENTRY": { "minBullets": 2, "projectsRequired": false, "leadershipExpected": false },
+        "MID": { "minBullets": 3, "projectsRequired": false, "leadershipExpected": false },
+        "SENIOR": { "minBullets": 3, "projectsRequired": false, "leadershipExpected": true },
+        "LEAD": { "minBullets": 3, "projectsRequired": false, "leadershipExpected": true },
+        "MANAGER": { "minBullets": 3, "projectsRequired": false, "leadershipExpected": true },
+        "EXECUTIVE": { "minBullets": 3, "projectsRequired": false, "leadershipExpected": true }
+      }
+    }
+  }
+}

@@ -116,7 +116,7 @@ export default function OnboardingPage() {
           <div className="w-8 h-8 bg-primary text-primary-foreground flex items-center justify-center rounded-xl premium-shadow">
             <GraduationCap className="w-5 h-5" />
           </div>
-          <span className="font-bold text-xl tracking-tight">CareerOS</span>
+          <span className="font-bold text-xl tracking-tight">Rolevia</span>
         </div>
 
         {/* Step Content */}
@@ -330,7 +330,7 @@ export default function OnboardingPage() {
                 </div>
                 <h2 className="text-3xl font-bold tracking-tight mb-4">Analyzing Document</h2>
                 <p className="text-muted-foreground text-lg mb-8 max-w-md">
-                  The CareerOS engine is extracting your skills, structuring your experience, and building your unified profile.
+                  The Rolevia engine is extracting your skills, structuring your experience, and building your unified profile.
                 </p>
                 
                 <motion.div 
@@ -414,7 +414,7 @@ export default function OnboardingPage() {
                   Your Master Profile has been initialized. You can now access the Command Center to begin job intelligence, resume targeting, and mock interviews.
                 </p>
                 <Button size="lg" className="rounded-full px-8" onClick={handleFinishSetup} disabled={isSaving}>
-                  {isSaving ? 'Initializing...' : 'Enter CareerOS'} <ChevronRight className="ml-2 w-4 h-4" />
+                  {isSaving ? 'Initializing...' : 'Enter Rolevia'} <ChevronRight className="ml-2 w-4 h-4" />
                 </Button>
               </motion.div>
             )}

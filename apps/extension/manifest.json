@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "CareerOS Job Application Copilot",
+  "name": "Rolevia Job Application Copilot",
   "version": "1.0.0",
   "description": "Native Intelligence job application copilot. Securely auto-fill verified facts, analyze job match, and track applications.",
   "icons": {

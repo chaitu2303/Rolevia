@@ -45,7 +45,7 @@ export async function GET(
     });
     
     // Draw Title
-    page.drawText('CareerOS Certificate of Achievement', {
+    page.drawText('Rolevia Certificate of Achievement', {
       x: width / 2 - 250,
       y: height - 120,
       size: 30,
@@ -62,7 +62,7 @@ export async function GET(
     });
     
     // Draw Name
-    const recipientName = cert.user.name || 'CareerOS Member';
+    const recipientName = cert.user.name || 'Rolevia Member';
     page.drawText(recipientName, {
       x: width / 2 - (recipientName.length * 9),
       y: height - 230,
