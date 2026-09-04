@@ -3,7 +3,7 @@ import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { Sidebar } from '@/components/layout/Sidebar';
-import { Bell, UserCircle } from 'lucide-react';
+import { Bell, UserCircle, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const session = await auth();
@@ -30,10 +30,12 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   const xp = dbUser?.xpRecord?.totalXp ?? 0;
   const level = dbUser?.xpRecord?.currentLevel ?? 1;
   const userName = dbUser?.name ?? authUser.email?.split('@')[0] ?? 'Member';
+  const userRole = dbUser?.role ?? 'USER';
+  const isAdminOrOwner = userRole === 'ADMIN' || userRole === 'OWNER';
 
   return (
     <div className="flex h-screen bg-muted/10 overflow-hidden">
-      <Sidebar userName={userName} streak={streak} xp={xp} level={level} />
+      <Sidebar userName={userName} streak={streak} xp={xp} level={level} userRole={userRole} />
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0 h-screen relative">
@@ -61,6 +63,17 @@ export default async function DashboardLayout({ children }: { children: ReactNod
               </span>
               <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">AI Ready</span>
             </div>
+
+            {isAdminOrOwner && (
+              <Link 
+                href="/admin" 
+                className="flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 rounded-lg text-xs font-bold uppercase tracking-wider transition-all"
+                title="Admin Command Center"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-amber-500" />
+                <span>Admin</span>
+              </Link>
+            )}
             
             <Link href="/dashboard/notifications" className="relative p-2 rounded-full hover:bg-muted/80 transition-colors text-muted-foreground hover:text-foreground">
               <Bell className="w-5 h-5" />

@@ -95,7 +95,8 @@ export async function GET(
     });
 
     // Generate QR Code
-    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/verify/certificate/${cert.certificateCode}`;
+    const appBaseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || 'https://rolevia.com';
+    const verificationUrl = `${appBaseUrl}/verify/certificate/${cert.certificateCode}`;
     const qrCodeDataUrl = await QRCode.toDataURL(verificationUrl, {
       margin: 1,
       width: 150

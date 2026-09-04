@@ -29,20 +29,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        // Hardcoded admin login for role-based testing
-        if (
-          credentials.email === "admin@rolevia.com" &&
-          credentials.password === "Rolevia@Admin2026!"
-        ) {
-          return {
-            id: "admin-1",
-            name: "Rolevia Admin",
-            email: "admin@rolevia.com",
-            role: "ADMIN",
-          };
-        }
-
-        // Check user credentials in database
+        // Authenticate user credentials against database
         const normalizedEmail = String(credentials.email).toLowerCase().trim();
         const user = await prisma.user.findUnique({
           where: { email: normalizedEmail },
@@ -55,7 +42,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               id: user.id,
               name: user.name,
               email: user.email,
-              role: user.role,
+              role: user.role as "USER" | "ADMIN" | "OWNER",
             };
           }
         }

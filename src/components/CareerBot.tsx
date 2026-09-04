@@ -146,7 +146,7 @@ export function CareerBot() {
     // Use AI model if ready
     if (modelStatus === 'ready' && workerRef.current) {
       const history = messages.slice(-6).map(m => ({ role: m.role, content: m.content }));
-      const prompt = buildPrompt(text, history);
+      const prompt = await buildPrompt(text, history);
       workerRef.current.postMessage({ type: 'GENERATE', payload: { prompt } });
     } else {
       // Fallback: knowledge base based response

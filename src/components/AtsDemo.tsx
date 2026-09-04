@@ -14,12 +14,14 @@ import { saveAtsPendingResult } from '@/lib/ats/AtsPersistence';
 type Severity = 'CRITICAL' | 'HIGH' | 'MEDIUM';
 type Category = 'CONTENT' | 'SECTIONS' | 'ATS_ESSENTIALS';
 
-interface Issue {
-  category: Category;
-  severity: Severity;
-  title: string;
-  description: string;
-  fix: string;
+interface AtsCheck {
+  id: string;
+  category: string;
+  severity: string;
+  label: string;
+  status: string;
+  evidence: string;
+  recommendation: string;
 }
 
 interface ScanResult {
@@ -28,7 +30,7 @@ interface ScanResult {
   contentScore: number;
   sectionsScore: number;
   formattingScore: number;
-  issues: Issue[];
+  checks: AtsCheck[];
   strengths: string[];
   summary: string;
 }
@@ -117,15 +119,15 @@ function ScoreMeter({ score, label, description }: { score: number; label: strin
 }
 
 // ── Issue Card ─────────────────────────────────────────────────────────────────
-function IssueCard({ issue, index }: { issue: Issue; index: number }) {
+function IssueCard({ issue, index }: { issue: AtsCheck; index: number }) {
   const [open, setOpen] = useState(index === 0); // first one open by default
   const [copied, setCopied] = useState(false);
-  const cfg = SEV[issue.severity];
+  const cfg = SEV[issue.severity as Severity] || SEV.MEDIUM;
   const Icon = cfg.icon;
-  const catInfo = CAT_INFO[issue.category];
+  const catInfo = CAT_INFO[issue.category as Category] || { label: 'General', description: '', icon: FileText };
 
   const copyFix = () => {
-    navigator.clipboard.writeText(issue.fix);
+    navigator.clipboard.writeText(issue.recommendation);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -141,7 +143,7 @@ function IssueCard({ issue, index }: { issue: Issue; index: number }) {
           <Icon className={`w-4 h-4 ${cfg.text}`} />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="font-black text-sm leading-tight">{issue.title}</div>
+          <div className="font-black text-sm leading-tight">{issue.label}</div>
           <div className="text-xs font-bold text-gray-500 mt-0.5">{catInfo.label}</div>
         </div>
         <span className={`text-xs font-black px-2 py-1 shrink-0 ${cfg.bg} ${cfg.text}`}>
@@ -163,7 +165,7 @@ function IssueCard({ issue, index }: { issue: Issue; index: number }) {
               <div className="p-4 bg-[#faf8f5] space-y-4">
                 <div>
                   <p className="text-xs font-black uppercase tracking-widest text-gray-400 mb-1">Why This Matters</p>
-                  <p className="text-sm font-medium text-gray-700 leading-relaxed">{issue.description}</p>
+                  <p className="text-sm font-medium text-gray-700 leading-relaxed">{issue.evidence}</p>
                 </div>
 
                 {/* How to fix it */}
@@ -174,7 +176,7 @@ function IssueCard({ issue, index }: { issue: Issue; index: number }) {
                     </div>
                     <p className="font-black text-sm uppercase">How to Fix It</p>
                   </div>
-                  <p className="text-sm font-medium leading-relaxed text-gray-800">{issue.fix}</p>
+                  <p className="text-sm font-medium leading-relaxed text-gray-800">{issue.recommendation}</p>
                   <div className="flex gap-2 pt-1">
                     <button
                       onClick={copyFix}
@@ -304,14 +306,14 @@ export function AtsDemo() {
       `──────────────`,
       ...result.strengths.map(s => `✓ ${s}`),
       ``,
-      `ISSUES TO FIX (${result.issues.length} found)`,
+      `ISSUES TO FIX (${result.checks.length} found)`,
       `────────────────────────────────`,
-      ...result.issues.map((issue, i) => [
+      ...result.checks.map((issue, i) => [
         ``,
-        `${i + 1}. [${issue.severity}] ${issue.title}`,
+        `${i + 1}. [${issue.severity}] ${issue.label}`,
         `   Category: ${issue.category}`,
-        `   Problem: ${issue.description}`,
-        `   Fix: ${issue.fix}`,
+        `   Problem: ${issue.evidence}`,
+        `   Fix: ${issue.recommendation}`,
       ].join('\n')),
       ``,
       `─────────────────────────────────────────`,
@@ -343,11 +345,11 @@ export function AtsDemo() {
 
   const reset = () => { setResult(null); setError(null); setFileName(null); if (inputRef.current) inputRef.current.value = ''; };
 
-  const filteredIssues = result?.issues?.filter(i => activeCategory === 'ALL' || i.category === activeCategory) || [];
+  const filteredIssues = result?.checks?.filter(i => activeCategory === 'ALL' || i.category === activeCategory) || [];
 
-  const critCount = result?.issues?.filter(i => i.severity === 'CRITICAL').length || 0;
-  const highCount = result?.issues?.filter(i => i.severity === 'HIGH').length || 0;
-  const midCount = result?.issues?.filter(i => i.severity === 'MEDIUM').length || 0;
+  const critCount = result?.checks?.filter(i => i.severity === 'CRITICAL').length || 0;
+  const highCount = result?.checks?.filter(i => i.severity === 'HIGH').length || 0;
+  const midCount = result?.checks?.filter(i => i.severity === 'MEDIUM').length || 0;
 
   return (
     <section className="w-full bg-[#faf8f5] border-t-8 border-black py-24 px-6">
@@ -498,7 +500,7 @@ export function AtsDemo() {
                   <div className="bg-white border-4 border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] p-5 space-y-4">
                     <h3 className="font-black uppercase">Issues by Type</h3>
                     {(['CONTENT', 'SECTIONS', 'ATS_ESSENTIALS'] as Category[]).map(cat => {
-                      const count = result.issues.filter(i => i.category === cat).length;
+                      const count = result.checks.filter(i => i.category === cat).length;
                       const catInfo = CAT_INFO[cat];
                       const CatIcon = catInfo.icon;
                       return (
@@ -558,7 +560,7 @@ export function AtsDemo() {
                           className={`px-3 py-1.5 text-xs font-black border-2 border-black uppercase transition-all ${activeCategory === cat ? 'bg-black text-white' : 'bg-white hover:bg-[#FFE500]'}`}
                         >
                           {cat === 'ATS_ESSENTIALS' ? 'ATS' : cat === 'ALL' ? 'All Issues' : cat.charAt(0) + cat.slice(1).toLowerCase()}
-                          {cat !== 'ALL' && <span className="ml-1 opacity-70">({result.issues.filter(i => i.category === cat).length})</span>}
+                          {cat !== 'ALL' && <span className="ml-1 opacity-70">({result.checks.filter(i => i.category === cat).length})</span>}
                         </button>
                       ))}
                     </div>

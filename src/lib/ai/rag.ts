@@ -3,17 +3,50 @@
  * Securely retrieves and injects user-specific context into AI prompts.
  */
 
+
+import { vectorStore } from './vectorStore';
+import { CAREER_TOPICS } from './CareerKnowledgeBase';
+
 export interface CareerContext {
   userId: string;
   verifiedFacts: string[];
   jobTarget?: string;
   careerRole?: string;
   skills: string[];
+  ragAdvice: string[];
 }
 
-export async function buildContext(userId: string): Promise<CareerContext> {
-  // In a real implementation, this would query the Prisma DB for the master profile.
-  // For the AI Gateway implementation, we'll return the structural interface.
+let isInitialized = false;
+
+// Initialize the Vector Store with Career Knowledge chunks
+async function initVectorStore() {
+  if (isInitialized) return;
+  
+  const docs = [];
+  for (const [category, tips] of Object.entries(CAREER_TOPICS)) {
+    for (const tip of tips) {
+      docs.push({
+        id: `${category}-${Math.random().toString(36).substring(7)}`,
+        text: tip,
+        metadata: { category }
+      });
+    }
+  }
+  
+  await vectorStore.addDocuments(docs);
+  isInitialized = true;
+}
+
+export async function retrieveCareerAdvice(query: string, k: number = 3): Promise<string[]> {
+  await initVectorStore();
+  const results = await vectorStore.similaritySearch(query, k);
+  return results.map(doc => doc.text);
+}
+
+export async function buildContext(userId: string, query: string = ""): Promise<CareerContext> {
+  // In a real implementation, query the DB for the master profile.
+  const ragAdvice = query ? await retrieveCareerAdvice(query) : [];
+
   return {
     userId,
     verifiedFacts: [
@@ -22,7 +55,8 @@ export async function buildContext(userId: string): Promise<CareerContext> {
     ],
     jobTarget: "Senior Frontend Engineer",
     careerRole: "Software Engineer",
-    skills: ["TypeScript", "React", "Next.js", "Node.js"]
+    skills: ["TypeScript", "React", "Next.js", "Node.js"],
+    ragAdvice
   };
 }
 
@@ -34,5 +68,9 @@ Target: ${context.jobTarget || 'Not specified'}
 Verified Facts:
 ${context.verifiedFacts.map(f => `- ${f}`).join('\n')}
 Skills: ${context.skills.join(', ')}
+
+[RAG KNOWLEDGE INJECTION]
+Relevant Career Advice:
+${context.ragAdvice.map(advice => `- ${advice}`).join('\n')}
   `.trim();
 }

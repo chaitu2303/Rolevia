@@ -24,7 +24,8 @@ export function ShareablePoster({
   certificateId = 'P2J-CERT-8921'
 }: ShareablePosterProps) {
   const [copied, setCopied] = useState(false);
-  const verifyUrl = `http://localhost:3000/verify/certificate/${certificateId}`;
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || (typeof window !== 'undefined' ? window.location.origin : 'https://rolevia.com');
+  const verifyUrl = `${baseUrl}/verify/certificate/${certificateId}`;
 
   const shareText = `🔥 Milestone Unlocked! I just hit a ${streakDays}-Day Learning & Career Streak on Rolevia as a ${targetRole}!
 

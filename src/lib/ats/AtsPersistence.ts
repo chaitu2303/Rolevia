@@ -9,12 +9,14 @@ export interface StoredAtsResult {
   contentScore: number;
   sectionsScore: number;
   formattingScore: number;
-  issues: Array<{
-    category: 'CONTENT' | 'SECTIONS' | 'ATS_ESSENTIALS';
-    severity: 'CRITICAL' | 'HIGH' | 'MEDIUM';
-    title: string;
-    description: string;
-    fix: string;
+  checks: Array<{
+    id: string;
+    category: string;
+    severity: string;
+    label: string;
+    status: string;
+    evidence: string;
+    recommendation: string;
   }>;
   strengths: string[];
   summary: string;

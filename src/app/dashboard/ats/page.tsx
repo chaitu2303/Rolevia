@@ -68,7 +68,7 @@ function ScoreCard({ label, score }: { label: string; score: number }) {
 }
 
 // ── Issue Card ────────────────────────────────────────────────────────────────
-function IssueCard({ issue, index }: { issue: StoredAtsResult['issues'][0]; index: number }) {
+function IssueCard({ issue, index }: { issue: any; index: number }) {
   const [open, setOpen] = useState(index === 0);
   const [copied, setCopied] = useState(false);
   const cfg = SEV[issue.severity as Severity];
@@ -87,7 +87,7 @@ function IssueCard({ issue, index }: { issue: StoredAtsResult['issues'][0]; inde
           <Icon className={`w-4 h-4 ${cfg.text}`} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-black text-sm">{issue.title}</p>
+          <p className="font-black text-sm">{issue.label}</p>
           <p className="text-xs font-bold text-gray-500">{CAT_LABEL[issue.category as Category]}</p>
         </div>
         <span className={`text-xs font-black px-2 py-1 shrink-0 ${cfg.bg} ${cfg.text}`}>{cfg.label}</span>
@@ -99,7 +99,7 @@ function IssueCard({ issue, index }: { issue: StoredAtsResult['issues'][0]; inde
             <div className="border-t-4 border-black p-4 bg-[#faf8f5] space-y-3">
               <div>
                 <p className="text-xs font-black uppercase text-gray-400 mb-1">Why This Matters</p>
-                <p className="text-sm font-medium text-gray-700 leading-relaxed">{issue.description}</p>
+                <p className="text-sm font-medium text-gray-700 leading-relaxed">{issue.evidence}</p>
               </div>
               <div className="bg-white border-4 border-black p-4 space-y-2">
                 <div className="flex items-center gap-2">
@@ -108,7 +108,7 @@ function IssueCard({ issue, index }: { issue: StoredAtsResult['issues'][0]; inde
                   </div>
                   <p className="font-black text-sm uppercase">Exact Fix</p>
                 </div>
-                <p className="text-sm font-medium leading-relaxed">{issue.fix}</p>
+                <p className="text-sm font-medium leading-relaxed">{issue.recommendation}</p>
                 <button onClick={copyFix} className="flex items-center gap-1.5 bg-black text-white text-xs font-black px-3 py-2 border-2 border-black hover:bg-gray-800 transition-colors">
                   {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                   {copied ? 'Copied!' : 'Copy Fix Text'}
@@ -215,9 +215,9 @@ function ResumeScanner() {
       "WHAT'S WORKING",
       ...result.strengths.map(s => `✓ ${s}`),
       '',
-      `ISSUES TO FIX (${result.issues.length})`,
-      ...result.issues.map((issue, i) =>
-        `\n${i + 1}. [${issue.severity}] ${issue.title}\n   Problem: ${issue.description}\n   Fix: ${issue.fix}`
+      `ISSUES TO FIX (${result.checks.length})`,
+      ...result.checks.map((issue: any, i: number) =>
+        `\n${i + 1}. [${issue.severity}] ${issue.label}\n   Problem: ${issue.evidence}\n   Fix: ${issue.recommendation}`
       ),
       '',
       '—————————————————————————————',
@@ -240,7 +240,7 @@ function ResumeScanner() {
     if (inputRef.current) inputRef.current.value = '';
   };
 
-  const filteredIssues = result?.issues?.filter(i => filter === 'ALL' || i.category === filter) || [];
+  const filteredIssues = result?.checks?.filter((i: any) => filter === 'ALL' || i.category === filter) || [];
 
   if (scanning) {
     return (
@@ -367,13 +367,13 @@ function ResumeScanner() {
         {/* Right: Issues */}
         <div className="lg:col-span-8 space-y-4">
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <h3 className="font-black uppercase text-xl">Issues Found ({result.issues.length})</h3>
+            <h3 className="font-black uppercase text-xl">Issues Found ({result.checks.length})</h3>
             <div className="flex flex-wrap gap-2">
               {(['ALL', 'CONTENT', 'SECTIONS', 'ATS_ESSENTIALS'] as const).map(cat => (
                 <button key={cat} onClick={() => setFilter(cat)}
                   className={`px-3 py-1.5 text-xs font-black border-2 border-black uppercase ${filter === cat ? 'bg-black text-white' : 'bg-white hover:bg-[#FFE500]'}`}>
                   {cat === 'ATS_ESSENTIALS' ? 'ATS' : cat === 'ALL' ? 'All' : cat.charAt(0) + cat.slice(1).toLowerCase()}
-                  {cat !== 'ALL' && <span className="ml-1 opacity-60">({result.issues.filter(i => i.category === cat).length})</span>}
+                  {cat !== 'ALL' && <span className="ml-1 opacity-60">({result.checks.filter((i: any) => i.category === cat).length})</span>}
                 </button>
               ))}
             </div>

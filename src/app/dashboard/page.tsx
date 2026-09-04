@@ -46,6 +46,12 @@ export default async function DashboardHomePage() {
     include: {
       streakRecord: true,
       xpRecord: true,
+      assessmentAttempts: {
+        where: { status: 'COMPLETED' },
+        orderBy: { completedAt: 'desc' },
+        take: 1,
+        include: { evaluationResult: true }
+      },
       careerProfile: {
         include: {
           skills: { where: { status: { in: ['USER_CONFIRMED', 'USER_CREATED'] } } },
@@ -230,23 +236,67 @@ export default async function DashboardHomePage() {
             </Card>
           </div>
           
-          {/* Quick Tools */}
-          <div>
-            <h3 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-wider">Quick Tools</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {[
-                { href: "/dashboard/ats", icon: FileText, label: "ATS Tailor", color: "text-blue-500", bg: "bg-blue-500/10" },
-                { href: "/dashboard/jobs", icon: Briefcase, label: "Job Intel", color: "text-amber-500", bg: "bg-amber-500/10" },
-                { href: "/dashboard/interview", icon: Brain, label: "Mock Chat", color: "text-purple-500", bg: "bg-purple-500/10" },
-                { href: "/dashboard/code", icon: Code2, label: "Code Arena", color: "text-primary", bg: "bg-primary/10" },
-              ].map((tool, i) => (
-                <Link key={i} href={tool.href} className={`flex flex-col items-center justify-center gap-3 p-5 rounded-2xl border border-border bg-card shadow-sm hover:shadow-md hover:bg-muted/30 transition-all`}>
-                  <div className={`w-10 h-10 rounded-xl ${tool.bg} flex items-center justify-center`}>
-                    <tool.icon className={`w-5 h-5 ${tool.color}`} />
-                  </div>
-                  <span className="font-medium text-xs text-foreground">{tool.label}</span>
-                </Link>
-              ))}
+          {/* Weakness Insights & Quick Tools */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            {/* Quick Tools */}
+            <div>
+              <h3 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-wider">Quick Tools</h3>
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  { href: "/dashboard/ats", icon: FileText, label: "ATS Tailor", color: "text-blue-500", bg: "bg-blue-500/10" },
+                  { href: "/dashboard/jobs", icon: Briefcase, label: "Job Intel", color: "text-amber-500", bg: "bg-amber-500/10" },
+                  { href: "/dashboard/interview", icon: Brain, label: "Mock Chat", color: "text-purple-500", bg: "bg-purple-500/10" },
+                  { href: "/dashboard/code", icon: Code2, label: "Code Arena", color: "text-primary", bg: "bg-primary/10" },
+                ].map((tool, i) => (
+                  <Link key={i} href={tool.href} className={`flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border border-border bg-card shadow-sm hover:shadow-md hover:bg-muted/30 transition-all`}>
+                    <div className={`w-8 h-8 rounded-xl ${tool.bg} flex items-center justify-center`}>
+                      <tool.icon className={`w-4 h-4 ${tool.color}`} />
+                    </div>
+                    <span className="font-medium text-xs text-foreground">{tool.label}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Weakness Insights */}
+            <div>
+              <h3 className="text-sm font-semibold text-foreground mb-4 uppercase tracking-wider">Weakness Insights</h3>
+              <Card className="rounded-2xl border-border shadow-sm bg-card h-[calc(100%-2rem)]">
+                <CardContent className="p-5 h-full flex flex-col justify-center">
+                  {dbUser?.assessmentAttempts?.[0]?.evaluationResult?.weakestTopics ? (
+                    (() => {
+                      const weakest = dbUser.assessmentAttempts[0].evaluationResult.weakestTopics as any[];
+                      if (weakest.length > 0) {
+                        return (
+                          <div className="space-y-4">
+                            <div className="text-sm text-muted-foreground mb-2">Focus on improving these areas based on your last assessment:</div>
+                            {weakest.slice(0, 3).map((w, i) => (
+                              <div key={i} className="flex items-center gap-3">
+                                <div className="w-1.5 h-1.5 rounded-full bg-destructive shrink-0" />
+                                <span className="text-sm font-medium text-foreground flex-1 truncate">{w.topic || w}</span>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      }
+                      return (
+                        <div className="flex flex-col items-center justify-center text-center py-4 opacity-70">
+                          <Brain className="w-6 h-6 text-muted-foreground mb-2" />
+                          <div className="text-sm font-medium text-muted-foreground">Strong performance!</div>
+                          <div className="text-xs text-muted-foreground mt-1">No critical weaknesses detected.</div>
+                        </div>
+                      );
+                    })()
+                  ) : (
+                    <div className="flex flex-col items-center justify-center text-center py-4 opacity-70">
+                      <Target className="w-6 h-6 text-muted-foreground mb-2" />
+                      <div className="text-sm font-medium text-muted-foreground">No Data Yet</div>
+                      <div className="text-xs text-muted-foreground mt-1">Complete an assessment to see insights.</div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>

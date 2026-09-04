@@ -87,9 +87,10 @@ interface SidebarProps {
   streak?: number;
   xp?: number;
   level?: number;
+  userRole?: string;
 }
 
-export function Sidebar({ userName, streak = 0, xp = 0, level = 1 }: SidebarProps) {
+export function Sidebar({ userName, streak = 0, xp = 0, level = 1, userRole = 'USER' }: SidebarProps) {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
@@ -180,6 +181,23 @@ export function Sidebar({ userName, streak = 0, xp = 0, level = 1 }: SidebarProp
             </div>
           )}
         </Link>
+        {(userRole === 'ADMIN' || userRole === 'OWNER') && (
+          <Link
+            href="/admin"
+            title={isCollapsed ? "Admin Command Center" : undefined}
+            className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-semibold transition-all group bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 hover:bg-amber-500/20 ${isCollapsed ? 'justify-center' : ''}`}
+          >
+            <ShieldCheck className="w-4 h-4 shrink-0 text-amber-500" />
+            {!isCollapsed && (
+              <div className="flex-1 flex items-center justify-between">
+                <span>Admin Portal</span>
+                <span className="text-[10px] bg-amber-500/20 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded-full uppercase tracking-wider font-bold">
+                  {userRole}
+                </span>
+              </div>
+            )}
+          </Link>
+        )}
         <Link
           href="/dashboard/settings"
           title={isCollapsed ? "Settings" : undefined}
@@ -316,6 +334,24 @@ export function Sidebar({ userName, streak = 0, xp = 0, level = 1 }: SidebarProp
                   </div>
                 </div>
               ))}
+
+              {(userRole === 'ADMIN' || userRole === 'OWNER') && (
+                <div className="pt-3 border-t border-border/50">
+                  <Link
+                    href="/admin"
+                    onClick={() => setMobileMoreOpen(false)}
+                    className="flex items-center justify-between p-3.5 rounded-xl text-sm font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
+                  >
+                    <div className="flex items-center gap-3">
+                      <ShieldCheck className="w-5 h-5 text-amber-500" />
+                      <span>Admin Command Center</span>
+                    </div>
+                    <span className="text-[10px] bg-amber-500/20 px-2 py-0.5 rounded-full uppercase tracking-wider font-bold">
+                      {userRole}
+                    </span>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>

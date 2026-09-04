@@ -17,7 +17,17 @@ import {
   Award,
   Crown,
   Database,
-  Server
+  Server,
+  Zap,
+  Sliders,
+  ToggleLeft,
+  ToggleRight,
+  Cpu,
+  HardDrive,
+  Radio,
+  Clock,
+  Check,
+  X
 } from 'lucide-react';
 import { AuthenticatedUser } from '@/lib/auth/admin';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -30,17 +40,21 @@ interface AdminDashboardProps {
 }
 
 export function AdminDashboardClient({ currentUser }: AdminDashboardProps) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'health' | 'audit' | 'feedback' | 'bugs'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'activity' | 'flags' | 'health' | 'audit' | 'feedback' | 'bugs'>('overview');
   const [stats, setStats] = useState<any>(null);
   const [users, setUsers] = useState<any[]>([]);
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [feedbacks, setFeedbacks] = useState<any[]>([]);
   const [bugs, setBugs] = useState<any[]>([]);
   const [health, setHealth] = useState<any>(null);
+  const [activities, setActivities] = useState<any[]>([]);
+  const [flags, setFlags] = useState<any[]>([]);
+  const [totalCreditsConsumed, setTotalCreditsConsumed] = useState<number>(0);
   
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [flagToggling, setFlagToggling] = useState<string | null>(null);
 
   // Load Overview Data
   const loadOverview = async () => {
@@ -75,6 +89,33 @@ export function AdminDashboardClient({ currentUser }: AdminDashboardProps) {
       const data = await res.json();
       if (data.success) {
         setHealth(data.health);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // Load Live Activity Data
+  const loadActivity = async () => {
+    try {
+      const res = await fetch('/api/admin/activity?limit=50');
+      const data = await res.json();
+      if (data.success) {
+        setActivities(data.activities);
+        setTotalCreditsConsumed(data.totalCreditsConsumed);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // Load Feature Flags Data
+  const loadFlags = async () => {
+    try {
+      const res = await fetch('/api/admin/feature-flags');
+      const data = await res.json();
+      if (data.success) {
+        setFlags(data.flags);
       }
     } catch (e) {
       console.error(e);
@@ -148,6 +189,27 @@ export function AdminDashboardClient({ currentUser }: AdminDashboardProps) {
     }
   };
 
+  const handleToggleFlag = async (key: string, currentEnabled: boolean) => {
+    setFlagToggling(key);
+    try {
+      const res = await fetch('/api/admin/feature-flags', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, enabled: !currentEnabled })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setFlags(prev => prev.map(f => f.key === key ? { ...f, enabled: !currentEnabled } : f));
+      } else {
+        alert(data.error || 'Failed to toggle flag');
+      }
+    } catch (e) {
+      alert('Network error toggling feature flag');
+    } finally {
+      setFlagToggling(null);
+    }
+  };
+
   const handleUpdateBugStatus = async (bugId: string, status: string) => {
     try {
       const res = await fetch('/api/bugs', {
@@ -176,7 +238,7 @@ export function AdminDashboardClient({ currentUser }: AdminDashboardProps) {
             </Badge>
             <Badge variant="outline" className="flex items-center gap-1.5 text-[10px] font-bold text-success border-success/30 bg-success/10 px-2.5 py-0.5 rounded-full">
               <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-              Live Operator Mode
+              Live Telemetry Active
             </Badge>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black uppercase tracking-tight mt-3 flex items-center gap-3 text-foreground">
@@ -188,8 +250,8 @@ export function AdminDashboardClient({ currentUser }: AdminDashboardProps) {
         </div>
 
         <div className="flex items-center gap-3">
-          <a href="/dashboard" className="inline-flex shrink-0 items-center justify-center rounded-lg border border-input bg-background hover:bg-muted hover:text-foreground h-7 px-2.5 font-semibold text-xs transition-colors">
-            User Dashboard
+          <a href="/dashboard" className="inline-flex shrink-0 items-center justify-center rounded-lg border border-input bg-background hover:bg-muted hover:text-foreground h-8 px-3 font-semibold text-xs transition-colors">
+            Return to Workstation
           </a>
           <Button
             size="sm"
@@ -197,13 +259,16 @@ export function AdminDashboardClient({ currentUser }: AdminDashboardProps) {
               loadOverview();
               loadUsers(searchQuery);
               loadHealth();
+              if (activeTab === 'activity') loadActivity();
+              if (activeTab === 'flags') loadFlags();
               if (activeTab === 'audit') loadAuditLogs();
               if (activeTab === 'feedback') loadFeedback();
               if (activeTab === 'bugs') loadBugs();
             }}
             title="Refresh live metrics"
+            className="h-8"
           >
-            <RefreshCw className="w-4 h-4 mr-2" /> Refresh
+            <RefreshCw className="w-3.5 h-3.5 mr-2" /> Refresh
           </Button>
         </div>
       </div>
@@ -213,7 +278,9 @@ export function AdminDashboardClient({ currentUser }: AdminDashboardProps) {
         {[
           { id: 'overview', label: 'Overview & KPIs', icon: Activity },
           { id: 'users', label: 'User Directory', icon: Users },
-          { id: 'health', label: 'System Health', icon: Server },
+          { id: 'activity', label: 'Live Activity Stream', icon: Radio, onClick: loadActivity },
+          { id: 'flags', label: 'Feature Flags', icon: Sliders, onClick: loadFlags },
+          { id: 'health', label: 'System Health', icon: Server, onClick: loadHealth },
           { id: 'audit', label: 'Audit Trail', icon: ShieldCheck, onClick: loadAuditLogs },
           { id: 'feedback', label: 'User Feedback', icon: MessageSquare, onClick: loadFeedback },
           { id: 'bugs', label: 'Bug Reports', icon: Bug, onClick: loadBugs },
@@ -227,13 +294,13 @@ export function AdminDashboardClient({ currentUser }: AdminDashboardProps) {
                 setActiveTab(tab.id as any);
                 if (tab.onClick) tab.onClick();
               }}
-              className={`flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-t-lg transition-colors border-b-2 ${
+              className={`flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-t-lg transition-colors border-b-2 ${
                 isActive
                   ? 'border-primary text-primary bg-primary/5'
                   : 'border-transparent text-muted-foreground hover:bg-muted hover:text-foreground'
               }`}
             >
-              <Icon className="w-4 h-4" />
+              <Icon className="w-3.5 h-3.5" />
               {tab.label}
             </button>
           );
@@ -265,7 +332,7 @@ export function AdminDashboardClient({ currentUser }: AdminDashboardProps) {
               <CardContent className="p-5">
                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2">Mock Interviews Run</p>
                 <p className="text-3xl font-black text-foreground">{stats.totalInterviews}</p>
-                <p className="text-xs text-amber-500 font-medium mt-1">Adaptive Voice/Text</p>
+                <p className="text-xs text-amber-500 font-medium mt-1">Adaptive Turn Evaluations</p>
               </CardContent>
             </Card>
 
@@ -296,19 +363,19 @@ export function AdminDashboardClient({ currentUser }: AdminDashboardProps) {
                 <div className="p-4 rounded-xl border border-blue-500/20 bg-blue-500/5">
                   <p className="text-[10px] font-bold text-blue-500 uppercase tracking-wider">Launch (₹59/mo)</p>
                   <p className="text-2xl font-black mt-1 text-blue-600">{stats.planDistribution?.LAUNCH || 0}</p>
-                  <p className="text-xs text-blue-500/70 mt-1 font-medium">Students & Freshers</p>
+                  <p className="text-xs text-blue-500/70 mt-1 font-medium">50 Monthly Credits</p>
                 </div>
 
                 <div className="p-4 rounded-xl border border-success/20 bg-success/5">
                   <p className="text-[10px] font-bold text-success uppercase tracking-wider">Career (₹99/mo)</p>
                   <p className="text-2xl font-black mt-1 text-success-foreground">{stats.planDistribution?.CAREER || 0}</p>
-                  <p className="text-xs text-success/70 mt-1 font-medium">Flagship Recommended</p>
+                  <p className="text-xs text-success/70 mt-1 font-medium">200 Monthly Credits</p>
                 </div>
 
                 <div className="p-4 rounded-xl border border-amber-500/20 bg-amber-500/5">
                   <p className="text-[10px] font-bold text-amber-500 uppercase tracking-wider">Pro / Owner (₹149/mo)</p>
                   <p className="text-2xl font-black mt-1 text-amber-600">{stats.planDistribution?.PRO || 0}</p>
-                  <p className="text-xs text-amber-500/70 mt-1 font-medium">VIP & Owner Grants</p>
+                  <p className="text-xs text-amber-500/70 mt-1 font-medium">Unlimited VIP Access</p>
                 </div>
               </div>
             </CardContent>
@@ -378,7 +445,6 @@ export function AdminDashboardClient({ currentUser }: AdminDashboardProps) {
                           </Badge>
                         </td>
                         <td className="p-4 text-right space-x-2">
-                          {/* Grant Pro Plan Button */}
                           <Button
                             variant="default"
                             size="sm"
@@ -389,7 +455,6 @@ export function AdminDashboardClient({ currentUser }: AdminDashboardProps) {
                             Grant PRO
                           </Button>
 
-                          {/* Suspend / Restore */}
                           {!isOwner && (
                             <Button
                               variant={isSuspended ? 'secondary' : 'destructive'}
@@ -402,7 +467,6 @@ export function AdminDashboardClient({ currentUser }: AdminDashboardProps) {
                             </Button>
                           )}
 
-                          {/* Promote to Admin (Owner only) */}
                           {currentUser.role === 'OWNER' && !isOwner && (
                             <Button
                               variant="outline"
@@ -425,73 +489,289 @@ export function AdminDashboardClient({ currentUser }: AdminDashboardProps) {
         </Card>
       )}
 
-      {/* TAB 3: SYSTEM HEALTH */}
-      {activeTab === 'health' && health && (
+      {/* TAB 3: LIVE ACTIVITY STREAM */}
+      {activeTab === 'activity' && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <Card className="rounded-xl border border-border shadow-sm p-4">
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Total Platform Credits Burned</p>
+              <p className="text-3xl font-black text-foreground mt-1">{totalCreditsConsumed}</p>
+              <p className="text-xs text-muted-foreground mt-1">Across all usage ledger records</p>
+            </Card>
+            <Card className="rounded-xl border border-border shadow-sm p-4">
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Recent Activity Window</p>
+              <p className="text-3xl font-black text-foreground mt-1">{activities.length}</p>
+              <p className="text-xs text-primary mt-1">Real-time candidate operations</p>
+            </Card>
+            <Card className="rounded-xl border border-border shadow-sm p-4">
+              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Auditing State</p>
+              <p className="text-3xl font-black text-success mt-1">Active</p>
+              <p className="text-xs text-muted-foreground mt-1">Continuous usage ledger writes</p>
+            </Card>
+          </div>
+
+          <Card className="rounded-xl border border-border shadow-sm">
+            <CardHeader className="border-b border-border bg-muted/30 pb-4">
+              <CardTitle className="text-sm font-semibold text-foreground uppercase tracking-wider">
+                Live Usage Ledger Stream
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="border-b border-border bg-muted/50 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                      <th className="p-4">Timestamp</th>
+                      <th className="p-4">User</th>
+                      <th className="p-4">Feature</th>
+                      <th className="p-4">Credits</th>
+                      <th className="p-4">Result</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {activities.length === 0 ? (
+                      <tr>
+                        <td colSpan={5} className="p-8 text-center text-muted-foreground">
+                          No recent usage ledger activities recorded.
+                        </td>
+                      </tr>
+                    ) : (
+                      activities.map((act) => (
+                        <tr key={act.id} className="hover:bg-muted/30 transition-colors">
+                          <td className="p-4 text-muted-foreground font-mono text-[11px] whitespace-nowrap">
+                            {new Date(act.timestamp).toLocaleTimeString()} · {new Date(act.timestamp).toLocaleDateString()}
+                          </td>
+                          <td className="p-4">
+                            <div className="font-semibold text-foreground">{act.user?.name || act.user?.email || 'Guest / System'}</div>
+                            <div className="text-muted-foreground text-[11px]">{act.user?.email}</div>
+                          </td>
+                          <td className="p-4">
+                            <Badge variant="outline" className="font-mono text-[10px] font-bold uppercase tracking-wider">
+                              {act.feature}
+                            </Badge>
+                          </td>
+                          <td className="p-4 font-semibold text-foreground">
+                            {act.creditsConsumed} credit{act.creditsConsumed > 1 ? 's' : ''}
+                          </td>
+                          <td className="p-4">
+                            <Badge className={`text-[9px] uppercase font-bold px-2 py-0 ${
+                              act.result === 'SUCCESS' ? 'bg-success/20 text-success' : 'bg-destructive/20 text-destructive'
+                            }`}>
+                              {act.result || 'SUCCESS'}
+                            </Badge>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* TAB 4: FEATURE FLAGS SWITCHBOARD */}
+      {activeTab === 'flags' && (
         <Card className="rounded-xl border border-border shadow-sm">
           <CardHeader className="border-b border-border bg-muted/30 pb-4">
-            <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground uppercase tracking-wider">
-              <Server className="w-4 h-4 text-primary" /> Live Infrastructure & Service Diagnostics
+            <CardTitle className="text-sm font-semibold text-foreground uppercase tracking-wider flex items-center gap-2">
+              <Sliders className="w-4 h-4 text-primary" /> Live Feature Flags & Emergency Controls
             </CardTitle>
+            <p className="text-xs text-muted-foreground mt-1">
+              Dynamically toggle platform subsystems on or off in production without redeploying code.
+            </p>
           </CardHeader>
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 rounded-xl border border-border bg-card space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-sm text-foreground">PostgreSQL (Neon DB)</span>
-                  <Badge className="bg-success/20 text-success hover:bg-success/30 font-bold text-[10px] uppercase">{health.services.database.status}</Badge>
-                </div>
-                <p className="text-xs text-muted-foreground mt-2">
-                  Connection Latency: <strong className="text-foreground">{health.services.database.latencyMs}ms</strong>
-                </p>
-                <p className="text-xs text-muted-foreground/70">
-                  SSL connection encrypted, connection pooling active.
-                </p>
-              </div>
+              {flags.map((flag) => {
+                const isMaintenance = flag.key === 'MAINTENANCE_MODE';
+                const isToggling = flagToggling === flag.key;
 
-              <div className="p-4 rounded-xl border border-border bg-card space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-sm text-foreground">Native Intelligence Engine</span>
-                  <Badge className="bg-success/20 text-success hover:bg-success/30 font-bold text-[10px] uppercase">{health.services.nativeIntelligence.status}</Badge>
-                </div>
-                <p className="text-xs text-muted-foreground mt-2">
-                  Mode: <strong className="text-foreground">{health.services.nativeIntelligence.mode}</strong>
-                </p>
-                <p className="text-xs text-muted-foreground/70">
-                  Zero external dependencies for ATS scoring, regex grammar checks, and question banks.
-                </p>
-              </div>
+                return (
+                  <div
+                    key={flag.key}
+                    className={`p-5 rounded-xl border transition-all ${
+                      flag.enabled
+                        ? isMaintenance
+                          ? 'border-destructive/40 bg-destructive/5'
+                          : 'border-success/30 bg-success/5'
+                        : 'border-border bg-card'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-sm text-foreground font-mono">{flag.key}</span>
+                          <Badge
+                            className={`text-[9px] uppercase font-bold px-2 py-0 ${
+                              flag.enabled
+                                ? isMaintenance
+                                  ? 'bg-destructive text-white'
+                                  : 'bg-success/20 text-success'
+                                : 'bg-muted text-muted-foreground'
+                            }`}
+                          >
+                            {flag.enabled ? 'ACTIVE' : 'DISABLED'}
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                          {flag.description || 'Dynamic feature flag controller'}
+                        </p>
+                      </div>
 
-              <div className="p-4 rounded-xl border border-border bg-card space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-sm text-foreground">Auth & Session Security</span>
-                  <Badge className="bg-success/20 text-success hover:bg-success/30 font-bold text-[10px] uppercase">{health.services.authentication.status}</Badge>
-                </div>
-                <p className="text-xs text-muted-foreground mt-2">
-                  Google OAuth: <strong className="text-foreground">{health.services.authentication.googleOauth}</strong>
-                </p>
-                <p className="text-xs text-muted-foreground/70">
-                  Protected JWT sessions, secure cookie encryption.
-                </p>
-              </div>
-
-              <div className="p-4 rounded-xl border border-border bg-card space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-sm text-foreground">Coding VM Runner</span>
-                  <Badge className="bg-success/20 text-success hover:bg-success/30 font-bold text-[10px] uppercase">{health.services.codeSandbox.status}</Badge>
-                </div>
-                <p className="text-xs text-muted-foreground mt-2">
-                  Sandbox: <strong className="text-foreground">{health.services.codeSandbox.runtime}</strong>
-                </p>
-                <p className="text-xs text-muted-foreground/70">
-                  Lexically scoped ES6 sandboxed execution with timeout protections.
-                </p>
-              </div>
+                      <Button
+                        size="sm"
+                        variant={flag.enabled ? (isMaintenance ? 'destructive' : 'default') : 'outline'}
+                        className="h-8 text-xs font-semibold shrink-0"
+                        disabled={isToggling}
+                        onClick={() => handleToggleFlag(flag.key, flag.enabled)}
+                      >
+                        {isToggling ? (
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        ) : flag.enabled ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 mr-1" /> Enabled
+                          </>
+                        ) : (
+                          <>
+                            <X className="w-3.5 h-3.5 mr-1" /> Disabled
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
       )}
 
-      {/* TAB 4: AUDIT TRAIL */}
+      {/* TAB 5: SYSTEM HEALTH */}
+      {activeTab === 'health' && health && (
+        <div className="space-y-6">
+          <Card className="rounded-xl border border-border shadow-sm">
+            <CardHeader className="border-b border-border bg-muted/30 pb-4">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground uppercase tracking-wider">
+                <Server className="w-4 h-4 text-primary" /> Live Infrastructure & Service Diagnostics
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 rounded-xl border border-border bg-card space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-sm text-foreground flex items-center gap-2">
+                      <Database className="w-4 h-4 text-emerald-500" /> PostgreSQL (Neon DB)
+                    </span>
+                    <Badge className="bg-success/20 text-success font-bold text-[10px] uppercase">
+                      {health.services.database.status}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Connection Latency: <strong className="text-foreground">{health.services.database.latencyMs}ms</strong>
+                  </p>
+                  <p className="text-xs text-muted-foreground/70">
+                    Connection pooling active with SSL encryption.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-xl border border-border bg-card space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-sm text-foreground flex items-center gap-2">
+                      <Cpu className="w-4 h-4 text-blue-500" /> Node.js Server Process
+                    </span>
+                    <Badge className="bg-primary/20 text-primary font-bold text-[10px] uppercase">
+                      {health.runtime?.nodeVersion || 'v20'}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Heap Memory: <strong className="text-foreground">{health.runtime?.memory?.heapUsedMb || 0} MB</strong> / {health.runtime?.memory?.heapTotalMb || 0} MB (RSS: {health.runtime?.memory?.rssMb || 0} MB)
+                  </p>
+                  <p className="text-xs text-muted-foreground/70">
+                    Platform: {health.runtime?.platform} · Uptime: {Math.floor((health.uptimeSeconds || 0) / 60)} minutes
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-xl border border-border bg-card space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-sm text-foreground flex items-center gap-2">
+                      <Lock className="w-4 h-4 text-amber-500" /> Authentication Services
+                    </span>
+                    <Badge className="bg-success/20 text-success font-bold text-[10px] uppercase">
+                      {health.services.authentication.status}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Google OAuth: <strong className="text-foreground">{health.services.authentication.googleOauth}</strong>
+                  </p>
+                  <p className="text-xs text-muted-foreground/70">
+                    NextAuth v5 JWT session encryption with CSRF protection.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-xl border border-border bg-card space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-sm text-foreground flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-violet-500" /> AI Providers & Native Fallback
+                    </span>
+                    <Badge className="bg-success/20 text-success font-bold text-[10px] uppercase">
+                      {health.services.nativeIntelligence.status}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Gemini: <strong className="text-foreground">{health.services.aiProviders?.gemini || 'N/A'}</strong> · OpenAI: <strong className="text-foreground">{health.services.aiProviders?.openAI || 'N/A'}</strong>
+                  </p>
+                  <p className="text-xs text-muted-foreground/70">
+                    Embedded deterministic engine provides 100% offline-ready fallback.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Database Table Record Counts */}
+          {health.tableCounts && (
+            <Card className="rounded-xl border border-border shadow-sm">
+              <CardHeader className="border-b border-border bg-muted/30 pb-4">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2 text-foreground uppercase tracking-wider">
+                  <HardDrive className="w-4 h-4 text-primary" /> Live Database Table Volume
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                  <div className="p-3 rounded-lg border border-border bg-card text-center">
+                    <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">Users</p>
+                    <p className="text-xl font-black text-foreground mt-1">{health.tableCounts.users}</p>
+                  </div>
+                  <div className="p-3 rounded-lg border border-border bg-card text-center">
+                    <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">Resumes</p>
+                    <p className="text-xl font-black text-foreground mt-1">{health.tableCounts.resumes}</p>
+                  </div>
+                  <div className="p-3 rounded-lg border border-border bg-card text-center">
+                    <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">Job Targets</p>
+                    <p className="text-xl font-black text-foreground mt-1">{health.tableCounts.jobTargets}</p>
+                  </div>
+                  <div className="p-3 rounded-lg border border-border bg-card text-center">
+                    <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">Interviews</p>
+                    <p className="text-xl font-black text-foreground mt-1">{health.tableCounts.interviewSessions}</p>
+                  </div>
+                  <div className="p-3 rounded-lg border border-border bg-card text-center">
+                    <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">Usage Logs</p>
+                    <p className="text-xl font-black text-foreground mt-1">{health.tableCounts.usageLedgerRecords}</p>
+                  </div>
+                  <div className="p-3 rounded-lg border border-border bg-card text-center">
+                    <p className="text-[10px] uppercase tracking-wider font-bold text-muted-foreground">Audit Logs</p>
+                    <p className="text-xl font-black text-foreground mt-1">{health.tableCounts.auditLogs}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      )}
+
+      {/* TAB 6: AUDIT TRAIL */}
       {activeTab === 'audit' && (
         <Card className="rounded-xl border border-border shadow-sm">
           <CardHeader className="border-b border-border bg-muted/30 pb-4">
@@ -526,7 +806,7 @@ export function AdminDashboardClient({ currentUser }: AdminDashboardProps) {
                         {log.target}
                       </td>
                       <td className="p-4">
-                        <Badge className="bg-success/20 text-success hover:bg-success/30 font-bold text-[9px] uppercase px-2 py-0">
+                        <Badge className="bg-success/20 text-success font-bold text-[9px] uppercase px-2 py-0">
                           {log.result}
                         </Badge>
                       </td>
@@ -539,7 +819,7 @@ export function AdminDashboardClient({ currentUser }: AdminDashboardProps) {
         </Card>
       )}
 
-      {/* TAB 5: FEEDBACK */}
+      {/* TAB 7: FEEDBACK */}
       {activeTab === 'feedback' && (
         <Card className="rounded-xl border border-border shadow-sm">
           <CardHeader className="border-b border-border bg-muted/30 pb-4">
@@ -569,7 +849,7 @@ export function AdminDashboardClient({ currentUser }: AdminDashboardProps) {
         </Card>
       )}
 
-      {/* TAB 6: BUG REPORTS */}
+      {/* TAB 8: BUG REPORTS */}
       {activeTab === 'bugs' && (
         <Card className="rounded-xl border border-border shadow-sm">
           <CardHeader className="border-b border-border bg-muted/30 pb-4">

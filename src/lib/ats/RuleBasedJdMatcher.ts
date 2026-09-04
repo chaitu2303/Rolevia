@@ -6,6 +6,14 @@ import verbsData from '@/data/ats_datasets/action_verbs.json';
 
 const COMMON_SKILLS = new Set(skillsData.skills.map(s => s.toLowerCase()));
 const ACTION_VERBS = verbsData.power_verbs.map(v => v.toLowerCase());
+const ALIASES = skillsData.aliases as Record<string, string>;
+
+// Pre-compute reverse aliases: canonical -> [aliases...]
+const REVERSE_ALIASES: Record<string, string[]> = {};
+for (const [alias, canonical] of Object.entries(ALIASES)) {
+  if (!REVERSE_ALIASES[canonical]) REVERSE_ALIASES[canonical] = [];
+  REVERSE_ALIASES[canonical].push(alias);
+}
 
 // Basic extraction of keywords from text
 function extractKeywords(text: string): string[] {
@@ -14,11 +22,13 @@ function extractKeywords(text: string): string[] {
   
   // Look for 1-word or 2-word combinations that might be skills
   for (let i = 0; i < words.length; i++) {
-    const w1 = words[i];
+    let w1 = words[i];
+    if (ALIASES[w1]) w1 = ALIASES[w1]; // resolve to canonical
     if (COMMON_SKILLS.has(w1)) found.add(w1);
     
     if (i < words.length - 1) {
-      const w2 = `${w1} ${words[i+1]}`;
+      let w2 = `${words[i]} ${words[i+1]}`;
+      if (ALIASES[w2]) w2 = ALIASES[w2]; // resolve to canonical
       if (COMMON_SKILLS.has(w2)) found.add(w2);
     }
   }
@@ -29,7 +39,9 @@ function extractKeywords(text: string): string[] {
   
   properNouns.forEach(noun => {
     if (!ignoreList.has(noun) && noun.length > 2) {
-      found.add(noun.toLowerCase());
+      let term = noun.toLowerCase();
+      if (ALIASES[term]) term = ALIASES[term]; // resolve to canonical
+      found.add(term);
     }
   });
 
@@ -47,7 +59,10 @@ export function matchJobDescription(resumeText: string, jdText: string) {
   const missingSkills: string[] = [];
   
   jdKeywords.forEach(keyword => {
-    const regex = new RegExp(`\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+    const termsToSearch = [keyword, ...(REVERSE_ALIASES[keyword] || [])];
+    const regexPattern = termsToSearch.map(t => `\\b${t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`).join('|');
+    const regex = new RegExp(regexPattern, 'i');
+    
     if (regex.test(resumeLower)) {
       matchedSkills.push(keyword);
     } else {
@@ -64,8 +79,10 @@ export function matchJobDescription(resumeText: string, jdText: string) {
   const foundVerbs = ACTION_VERBS.filter(v => resumeWords.includes(v));
   const actionVerbsMatch = Math.min(100, Math.round((foundVerbs.length / 5) * 100)); // 5 verbs is a 100%
 
-  // Readability (placeholder for structural checks)
-  const atsReadability = 85; 
+  // Readability (from deterministic engine)
+  const { analyzeResume } = require('./RuleBasedAtsEngine');
+  const atsAnalysis = analyzeResume(resumeText);
+  const atsReadability = atsAnalysis.parseRate || 85;
 
   // Overall Score weighting
   const score = Math.round(

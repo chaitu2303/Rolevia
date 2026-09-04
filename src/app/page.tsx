@@ -532,7 +532,7 @@ export default function Page() {
                     ))}
                   </div>
                 </div>
-                <Link href="/register" className="block mt-8">
+                <Link href="https://razorpay.me/@chaitanyakumarsahu" target="_blank" className="block mt-8">
                   <Button className={`w-full rounded-full py-6 font-bold ${plan.btnStyle}`}>{plan.cta}</Button>
                 </Link>
               </motion.div>

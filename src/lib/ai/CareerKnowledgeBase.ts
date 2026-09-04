@@ -51,7 +51,9 @@ export const CAREER_TOPICS: Record<string, string[]> = {
   ],
 };
 
-// Smart topic detection from user message
+import { retrieveCareerAdvice } from './rag';
+
+// Smart topic detection from user message (fallback/legacy)
 export function detectTopics(message: string): string[] {
   const lower = message.toLowerCase();
   const detected: string[] = [];
@@ -66,16 +68,15 @@ export function detectTopics(message: string): string[] {
   return detected;
 }
 
-export function buildPrompt(userMessage: string, history: { role: string; content: string }[]): string {
-  const topics = detectTopics(userMessage);
+export async function buildPrompt(userMessage: string, history: { role: string; content: string }[]): Promise<string> {
   const contextLines: string[] = [];
 
-  topics.forEach(topic => {
-    const tips = CAREER_TOPICS[topic];
-    if (tips) {
-      contextLines.push(`[${topic.toUpperCase()} TIPS]: ${tips.slice(0, 2).join(' | ')}`);
-    }
-  });
+  // Use RAG to fetch the top 3 most relevant career tips
+  const tips = await retrieveCareerAdvice(userMessage, 3);
+  if (tips && tips.length > 0) {
+    contextLines.push('[RAG RETRIEVED ADVICE]:');
+    tips.forEach(tip => contextLines.push(`- ${tip}`));
+  }
 
   const historyContext = history.slice(-4).map(m => `${m.role === 'user' ? 'User' : 'Rolevia Copilot'}: ${m.content}`).join('\n');
 
